@@ -1,1 +1,2 @@
-export { default as IconLinkWide } from './IconLinkWide';
+export * from './IconLinkWide';
+export * from './DiscoverCard';

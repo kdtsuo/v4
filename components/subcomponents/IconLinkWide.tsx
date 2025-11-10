@@ -60,7 +60,7 @@ function LinkContent({
   );
 }
 
-export default function IconLinkWide({
+export function IconLinkWide({
   iconType,
   label,
   link,

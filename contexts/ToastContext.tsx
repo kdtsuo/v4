@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext } from 'react';
 import { ToastContextType } from '@/types/type';
 import { ExternalToast, toast as sonnerToast } from 'sonner';

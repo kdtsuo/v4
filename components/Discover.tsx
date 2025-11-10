@@ -1,7 +1,3 @@
-import events from '@/assets/img/stock/events.jpeg';
-import joinourteam from '@/assets/img/stock/joinourteam.jpeg';
-import showcase from '@/assets/img/stock/showcase.jpeg';
-import teamphoto from '@/assets/img/stock/teamphoto.jpeg';
 import { getDelayClass } from '@/utils';
 import { BetweenHorizonalStart, Contact, HandCoins, Info } from 'lucide-react';
 import { DiscoverCard } from '@/components/subcomponents';
@@ -13,7 +9,7 @@ export function Discover() {
       title: 'More About Us',
       icon: Info,
       description: 'What makes us different',
-      image: teamphoto,
+      image: '/assets/img/stock/teamphoto.jpeg',
       link: '/about',
       isOpen: true,
     },
@@ -21,7 +17,7 @@ export function Discover() {
       title: 'Contact Us',
       icon: Contact,
       description: 'Get in touch',
-      image: showcase,
+      image: '/assets/img/stock/showcase.jpeg',
       link: '/contacts',
       isOpen: true,
     },
@@ -29,7 +25,7 @@ export function Discover() {
       title: 'Positions',
       icon: BetweenHorizonalStart,
       description: 'Find what position fits you',
-      image: joinourteam,
+      image: '/assets/img/stock/joinourteam.jpeg',
       link: '/positions',
       isOpen: true,
     },
@@ -37,7 +33,7 @@ export function Discover() {
       title: 'Sponsors',
       icon: HandCoins,
       description: 'People who believe in us',
-      image: events,
+      image: '/assets/img/stock/events.jpeg',
       link: '/sponsors',
       isOpen: true,
     },
