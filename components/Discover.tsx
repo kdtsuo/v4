@@ -1,11 +1,7 @@
-// @ts-expect-error this is needed to ignore the error for the image imports
-import events from '@/assets/img/stock/events.jpeg?w=800&format=webp&quality=80';
-// @ts-expect-error this is needed to ignore the error for the image imports
-import joinourteam from '@/assets/img/stock/joinourteam.jpeg?w=800&format=webp&quality=80';
-// @ts-expect-error this is needed to ignore the error for the image imports
-import showcase from '@/assets/img/stock/showcase.jpeg?w=800&format=webp&quality=80';
-// @ts-expect-error this is needed to ignore the error for the image imports
-import teamphoto from '@/assets/img/stock/teamphoto.jpeg?w=800&format=webp&quality=80';
+import events from '@/assets/img/stock/events.jpeg';
+import joinourteam from '@/assets/img/stock/joinourteam.jpeg';
+import showcase from '@/assets/img/stock/showcase.jpeg';
+import teamphoto from '@/assets/img/stock/teamphoto.jpeg';
 import { getDelayClass } from '@/utils';
 import { BetweenHorizonalStart, Contact, HandCoins, Info } from 'lucide-react';
 import { DiscoverCard } from '@/components/subcomponents';

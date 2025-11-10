@@ -1,6 +1,4 @@
-// @ts-expect-error static import
-import rmlogo from '@/assets/img/rmlogo.png';
-import { useTheme } from '@/hooks';
+import { useTheme } from 'next-themes';
 import {
   Card,
   CardContent,
@@ -11,6 +9,7 @@ import {
 import { getDelayClass } from '@/utils';
 import type { SocialLink } from '@/types';
 import { socialLinks as SocialFallback } from '@/lib/FallbackData/SocialFallback';
+import Image from 'next/image';
 
 export default function Footer() {
   const getYear = () => {
@@ -34,15 +33,17 @@ export default function Footer() {
           {/* Left: Text Section */}
           <div className='w-full sm:w-1/2 flex justify-center lg:justify-start'>
             <CardHeader>
-              <CardTitle>&copy; {getYear()} KDT ("KPop Dance Team")</CardTitle>
+              <CardTitle>&copy; {getYear()} KDT (&quot;KPop Dance Team&quot;)</CardTitle>
               <CardDescription className='text-lg'>
                 <div className='flex items-center space-x-2 text-sm my-2'>
                   <p>Made with ❤️ by</p>
                   <span>
                     <a href='https://rinm.dev' target='_blank' rel='noreferrer'>
-                      <img
-                        src={rmlogo}
+                      <Image
+                        src='/assets/img/rmlogo.png'
                         alt='rmlogo'
+                        width={64}
+                        height={32}
                         className='mx-1 h-auto w-16 invert-0 not-dark:invert-100'
                       />
                     </a>
@@ -85,10 +86,12 @@ export default function Footer() {
                     className='flex flex-row items-center justify-between space-x-4
                       h-full'
                   >
-                    <img
-                      src={link.icon}
-                      alt={link.title}
-                      className='size-6 not-dark:invert-0 dark:invert-100'
+                    <Image
+                      src='/assets/img/rmlogo.png'
+                      alt='rmlogo'
+                      width={64}
+                      height={32}
+                      className='mx-1 h-auto w-16 invert-0 not-dark:invert-100'
                     />
                     <CardTitle
                       className='text-primary-foreground text-base font-extralight

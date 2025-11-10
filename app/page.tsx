@@ -1,3 +1,4 @@
+'use client';
 import { Discover, Footer, QuickLinks } from '@/components';
 import { useTheme } from 'next-themes';
 

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth, useToast } from '@/hooks';
 import { supabase } from '@/lib';
 import type { ActionType, Link } from '@/types';
+import Image from 'next/image';
 import { iconMap } from '@/utils';
 import {
   closestCenter,
@@ -67,7 +68,7 @@ const formSchema = z.object({
   link: z.string().url('Please enter a valid URL'),
   iconType: z.string().min(1, 'Icon type is required'),
   price: z
-    .number({ invalid_type_error: 'Enter a number or leave blank' })
+    .number()
     .min(0, 'Enter a number or leave blank')
     .optional()
     .or(z.literal(undefined)),
@@ -125,7 +126,7 @@ function SortableItem({ link }: { link: Link }) {
       <div
         {...attributes}
         {...listeners}
-        className='flex-shrink-0 cursor-grab active:cursor-grabbing'
+        className='shrink-0 cursor-grab active:cursor-grabbing'
       >
         <GripVertical className='text-muted-foreground h-5 w-5' />
       </div>
@@ -487,9 +488,11 @@ export default function QuickLinks() {
                                         >
                                           {Icon && <Icon strokeWidth={2} size={30} />}
                                           {imagePath && (
-                                            <img
+                                            <Image
                                               src={imagePath}
                                               alt={iconKey}
+                                              width={32}
+                                              height={32}
                                               className='h-8 w-8 object-contain'
                                             />
                                           )}
@@ -556,9 +559,9 @@ export default function QuickLinks() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Permanently delete the link "
-                            {links.find((l) => l.id === selectedLinkId)?.label}" from the
-                            database? This action cannot be undone.
+                            Permanently delete the link &quot;
+                            {links.find((l) => l.id === selectedLinkId)?.label}&quot; from
+                            the database? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -580,8 +583,8 @@ export default function QuickLinks() {
                   {selectedAction === 'reorder' && (
                     <div className='w-full space-y-4'>
                       <p className='text-muted-foreground text-sm'>
-                        Drag and drop the links below to reorder them. Click "Save Order"
-                        when done.
+                        Drag and drop the links below to reorder them. Click &quot;Save
+                        Order&quot; when done.
                       </p>
                       <DndContext
                         sensors={sensors}
