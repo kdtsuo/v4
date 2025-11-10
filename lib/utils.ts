@@ -23,6 +23,7 @@ export function getTimeSince(createdAt: string | undefined): {
 
   if (daysDiff < 0) {
     monthsDiff -= 1;
+
     const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
     daysDiff += previousMonth.getDate();
   }
