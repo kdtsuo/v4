@@ -1,1 +1,1 @@
-# NextJS iteration for [kdt](kdtsuo.vercel.app)
+# NextJS iteration for [kdt](https://kdtsuo.vercel.app)
