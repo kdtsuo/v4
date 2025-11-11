@@ -196,10 +196,6 @@ export default function Positions() {
   }, [fetchPositionFromDatabase]);
 
   useEffect(() => {
-    toast.success('Page loaded successfully!');
-  }, [toast]);
-
-  useEffect(() => {
     if (value) {
       const selectedPosition = positionsData.find(
         (p) => p.label.toLowerCase().replace(/\s+/g, '') === value
