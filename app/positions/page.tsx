@@ -162,7 +162,7 @@ export default function Positions() {
                   positions={positionsData}
                   onPositionDeleted={fetchPositionFromDatabase}
                   trigger={
-                    <Button variant='secondary'>
+                    <Button variant='destructive'>
                       <Trash2 className='h-4 w-4' /> Delete
                     </Button>
                   }
