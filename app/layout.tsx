@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: '/assets/img/kdtlogosquare.png',
+        url: '/assets/img/kdtlogobanner.webp',
         width: 1200,
         height: 630,
         alt: 'KDT Logo',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     ],
   },
   twitter: {
-    images: ['/assets/img/kdtlogosquare.png'],
+    images: ['/assets/img/kdtlogobanner.webp'],
     card: 'summary_large_image',
   },
 };
