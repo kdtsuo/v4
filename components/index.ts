@@ -5,3 +5,4 @@ export { Navbar } from './Navbar';
 export { Footer } from './Footer';
 export { Discover } from './Discover';
 export { DiscoverCard } from './DiscoverCard';
+export { Activities } from './Activities';

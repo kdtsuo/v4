@@ -1,8 +1,7 @@
 import * as React from 'react';
+import { cn } from '@/lib/utils';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
-
-import { cn } from '@/lib/utils';
 
 function Menubar({
   className,
@@ -78,8 +77,7 @@ function MenubarContent({
           data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
           data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2
           data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2
-          z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin)
-          overflow-hidden rounded-md border p-1 shadow-md`,
+          z-50 min-w-[12rem] overflow-hidden rounded-md border p-1 shadow-md`,
           className
         )}
         {...props}
@@ -104,11 +102,11 @@ function MenubarItem({
       data-variant={variant}
       className={cn(
         `focus:bg-accent focus:text-accent-foreground
-        data-[variant=destructive]:text-destructive
+        data-[variant=destructive]:text-destructive-foreground
         data-[variant=destructive]:focus:bg-destructive/10
-        dark:data-[variant=destructive]:focus:bg-destructive/20
-        data-[variant=destructive]:focus:text-destructive
-        data-[variant=destructive]:*:[svg]:!text-destructive
+        dark:data-[variant=destructive]:focus:bg-destructive/40
+        data-[variant=destructive]:focus:text-destructive-foreground
+        data-[variant=destructive]:*:[svg]:!text-destructive-foreground
         [&_svg:not([class*='text-'])]:text-muted-foreground relative flex cursor-default
         items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none
         data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[inset]:pl-8
@@ -265,9 +263,8 @@ function MenubarSubContent({
         data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95
         data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2
         data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2
-        data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem]
-        origin-(--radix-menubar-content-transform-origin) overflow-hidden rounded-md
-        border p-1 shadow-lg`,
+        data-[side=top]:slide-in-from-bottom-2 z-50 min-w-[8rem] overflow-hidden
+        rounded-md border p-1 shadow-lg`,
         className
       )}
       {...props}
@@ -277,19 +274,19 @@ function MenubarSubContent({
 
 export {
   Menubar,
-  MenubarPortal,
-  MenubarMenu,
-  MenubarTrigger,
+  MenubarCheckboxItem,
   MenubarContent,
   MenubarGroup,
-  MenubarSeparator,
-  MenubarLabel,
   MenubarItem,
-  MenubarShortcut,
-  MenubarCheckboxItem,
+  MenubarLabel,
+  MenubarMenu,
+  MenubarPortal,
   MenubarRadioGroup,
   MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
   MenubarSub,
-  MenubarSubTrigger,
   MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
 };
