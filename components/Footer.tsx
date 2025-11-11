@@ -11,6 +11,8 @@ import { getDelayClass } from '@/utils';
 import { SocialLinks } from '@/lib/data';
 import Image from 'next/image';
 
+const VERSION = '4.0';
+
 export function Footer() {
   const getYear = () => {
     const date = new Date();
@@ -33,7 +35,7 @@ export function Footer() {
           <div className='w-full sm:w-1/2 flex justify-center lg:justify-start'>
             <CardHeader>
               <CardTitle>
-                v4.0 &copy; est. 2023-{getYear()} KDT (&quot;KPop Dance Team&quot;)
+                v{VERSION} &copy; est. 2023-{getYear()} KDT (&quot;KPop Dance Team&quot;)
               </CardTitle>
               <CardDescription className='text-lg'>
                 <div className='flex items-center space-x-2 text-sm my-2'>
