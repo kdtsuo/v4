@@ -1,8 +1,11 @@
+'use client';
+import { Activities } from '@/components/';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'about ♥ kdt',
-  description: 'learn more about the kpop dance team at ubco!',
+  title: 'positions ♥ kdt',
+  description: 'apply for open positions in the kpop dance team at ubco!',
   openGraph: {
     images: [
       {
@@ -18,12 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
 };
-
-// prettier-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-'use client';
-import { Activities } from '@/components/';
-import Image from 'next/image';
 
 export default function About() {
   return (

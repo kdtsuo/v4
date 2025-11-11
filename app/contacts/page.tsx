@@ -1,26 +1,3 @@
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'contacts ♥ kdt',
-  description: 'meet the kpop dance team members at ubco!',
-  openGraph: {
-    images: [
-      {
-        url: '/assets/img/kdtlogosquare.png',
-        width: 1200,
-        height: 630,
-        alt: 'KDT Logo',
-      },
-    ],
-  },
-  twitter: {
-    images: ['/assets/img/kdtlogosquare.png'],
-    card: 'summary_large_image',
-  },
-};
-
-// prettier-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
@@ -50,6 +27,26 @@ const linkedinIcon = '/assets/img/icons/linkedin.svg';
 const githubIcon = '/assets/img/icons/github.svg';
 
 import { getDelayClass } from '@/utils';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'contacts ♥ kdt',
+  description: 'meet the kpop dance team members at ubco!',
+  openGraph: {
+    images: [
+      {
+        url: '/assets/img/kdtlogosquare.png',
+        width: 1200,
+        height: 630,
+        alt: 'KDT Logo',
+      },
+    ],
+  },
+  twitter: {
+    images: ['/assets/img/kdtlogosquare.png'],
+    card: 'summary_large_image',
+  },
+};
 
 export default function Contacts() {
   const { theme } = useTheme();
