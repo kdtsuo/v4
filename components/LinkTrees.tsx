@@ -41,6 +41,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -384,6 +385,7 @@ export function LinkTrees() {
                     (selectedAction === 'update' && selectedLinkId)) && (
                     <Form {...manageForm}>
                       <form
+                        id='manage-link-form'
                         onSubmit={manageForm.handleSubmit(handleManageSubmit)}
                         className='space-y-2'
                       >
@@ -508,15 +510,6 @@ export function LinkTrees() {
                             </FormItem>
                           )}
                         />
-                        <Button type='submit' className='w-full' disabled={isSubmitting}>
-                          {isSubmitting ? (
-                            <Loader2 className='animate-spin' />
-                          ) : selectedAction === 'add' ? (
-                            'Add Link'
-                          ) : (
-                            'Update Link'
-                          )}
-                        </Button>
                       </form>
                     </Form>
                   )}
@@ -583,21 +576,42 @@ export function LinkTrees() {
                           </div>
                         </SortableContext>
                       </DndContext>
-                      <Button
-                        onClick={handleSaveOrder}
-                        className='w-full'
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <Loader2 className='animate-spin' />
-                        ) : (
-                          'Save Order'
-                        )}
-                      </Button>
                     </div>
                   )}
                 </div>
               </ScrollArea>
+              {/* DialogFooter for Add/Edit */}
+              {(selectedAction === 'add' ||
+                (selectedAction === 'update' && selectedLinkId)) && (
+                <DialogFooter className='mt-4'>
+                  <Button
+                    type='submit'
+                    form='manage-link-form'
+                    className='w-full'
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className='animate-spin' />
+                    ) : selectedAction === 'add' ? (
+                      'Add Link'
+                    ) : (
+                      'Update Link'
+                    )}
+                  </Button>
+                </DialogFooter>
+              )}
+              {/* DialogFooter for Reorder */}
+              {selectedAction === 'reorder' && (
+                <DialogFooter className='mt-4'>
+                  <Button
+                    onClick={handleSaveOrder}
+                    className='w-full'
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <Loader2 className='animate-spin' /> : 'Save Order'}
+                  </Button>
+                </DialogFooter>
+              )}
             </DialogContent>
           </Dialog>
         </div>

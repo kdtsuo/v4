@@ -188,7 +188,7 @@ export function AddEditMemberDialog({
             {mode === 'add' ? 'Add New Team Member' : 'Edit Team Member'}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea type='always' className='max-h-[60vh] pr-4'>
+        <ScrollArea type='always' className='max-h-[50vh] sm:max-h-[70vh] pr-4'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className='space-y-6'>
               <div className='grid gap-4 py-2'>
