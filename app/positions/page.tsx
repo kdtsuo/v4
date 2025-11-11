@@ -592,17 +592,22 @@ export default function Positions() {
                   <DialogClose asChild>
                     {value && (
                       <Button
+                        asChild
                         variant='default'
                         className='cursor-pointer'
                         disabled={!value}
-                        onClick={() => {
-                          const selectedPosition = positionsData.find(
-                            (p) => p.label.toLowerCase().replace(/\s+/g, '') === value
-                          );
-                          window.open(selectedPosition?.form_url, '_blank');
-                        }}
                       >
-                        Goto Form
+                        <a
+                          href={
+                            positionsData.find(
+                              (p) => p.label.toLowerCase().replace(/\s+/g, '') === value
+                            )?.form_url || '#'
+                          }
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          Goto Form
+                        </a>
                       </Button>
                     )}
                   </DialogClose>

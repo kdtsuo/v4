@@ -151,31 +151,19 @@ const Sponsor: React.FC<
           text-center'
       >
         <CardTitle>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              if (typeof window !== 'undefined') {
-                window.open(websitelink, '_blank');
-              }
-            }}
-            className='w-full text-lg font-medium md:text-xl'
-          >
-            <div>{title}</div>
-            <SquareArrowOutUpRight />
+          <Button asChild className='w-full text-lg font-medium md:text-xl'>
+            <a href={websitelink} target='_blank' rel='noopener noreferrer'>
+              <div>{title}</div>
+              <SquareArrowOutUpRight />
+            </a>
           </Button>
         </CardTitle>
-        <Button
-          variant='secondary'
-          onClick={(e) => {
-            e.stopPropagation();
-            if (typeof window !== 'undefined') {
-              window.open(maplink, '_blank');
-            }
-          }}
-        >
-          <MapPin />
-          <div className='text-xs font-medium md:text-sm'>{location}</div>
-          <SquareArrowOutUpRight />
+        <Button asChild variant='secondary'>
+          <a href={maplink} target='_blank' rel='noopener noreferrer'>
+            <MapPin />
+            <div className='text-xs font-medium md:text-sm'>{location}</div>
+            <SquareArrowOutUpRight />
+          </a>
         </Button>
         <Badge
           className='bg-yellow-500 text-sm wrap-break-word whitespace-normal text-black'
@@ -322,27 +310,25 @@ export default function Sponsors() {
                     className='flex flex-col justify-center gap-3 md:flex-row
                       md:justify-start fade-in-from-bottom'
                   >
-                    <Button
-                      variant='default'
-                      onClick={() => {
-                        if (typeof window !== 'undefined') {
-                          window.open(topSponsor.websitelink, '_blank');
-                        }
-                      }}
-                    >
-                      Visit Sponsor Website <SquareArrowOutUpRight />
+                    <Button asChild variant='default'>
+                      <a
+                        href={topSponsor.websitelink}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        Visit Sponsor Website <SquareArrowOutUpRight />
+                      </a>
                     </Button>
-                    <Button
-                      variant='secondary'
-                      onClick={() => {
-                        if (typeof window !== 'undefined') {
-                          window.open(topSponsor.maplink, '_blank');
-                        }
-                      }}
-                    >
-                      <MapPin />
-                      {topSponsor.location}
-                      <SquareArrowOutUpRight />
+                    <Button asChild variant='secondary'>
+                      <a
+                        href={topSponsor.maplink}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                      >
+                        <MapPin />
+                        {topSponsor.location}
+                        <SquareArrowOutUpRight />
+                      </a>
                     </Button>
                   </div>
                 </CardContent>

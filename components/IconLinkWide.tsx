@@ -39,13 +39,8 @@ export function IconLinkWide({
           font-medium`,
           className
         )}
-        onClick={() => {
-          if (typeof window !== 'undefined') {
-            window.open(link, '_blank');
-          }
-        }}
       >
-        <div className='flex w-full'>
+        <a href={link} target='_blank' rel='noopener noreferrer'>
           <div className='flex w-full items-center'>
             <div className='mr-4 shrink-0'>
               <div>{Icon && <Icon className='[&_svg]:size-8' />}</div>
@@ -83,7 +78,7 @@ export function IconLinkWide({
               </Badge>
             )}
           </div>
-        </div>
+        </a>
       </Button>
     </div>
   );
