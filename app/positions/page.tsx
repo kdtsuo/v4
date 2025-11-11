@@ -137,7 +137,7 @@ export default function Positions() {
             {user && (
               <>
                 {/* Add Position Button */}
-                <PositionsActions.AddEditPositionDialog
+                <PositionsActions.AddEdit
                   onPositionSaved={fetchPositionFromDatabase}
                   trigger={
                     <Button variant='default'>
@@ -147,7 +147,7 @@ export default function Positions() {
                 />
 
                 {/* Edit Position Button */}
-                <PositionsActions.AddEditPositionDialog
+                <PositionsActions.AddEdit
                   positions={positionsData}
                   onPositionSaved={fetchPositionFromDatabase}
                   trigger={
@@ -158,7 +158,7 @@ export default function Positions() {
                 />
 
                 {/* Delete Position Button */}
-                <PositionsActions.DeletePositionDialog
+                <PositionsActions.Delete
                   positions={positionsData}
                   onPositionDeleted={fetchPositionFromDatabase}
                   trigger={

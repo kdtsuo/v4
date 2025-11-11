@@ -40,17 +40,13 @@ const positionSchema = z.object({
   is_accepting_responses: z.boolean(),
 });
 
-type AddEditPositionDialogProps = {
+type AddEditProps = {
   onPositionSaved: () => void;
   positions?: Position[];
   trigger?: React.ReactNode;
 };
 
-export function AddEditPositionDialog({
-  onPositionSaved,
-  positions = [],
-  trigger,
-}: AddEditPositionDialogProps) {
+export function AddEdit({ onPositionSaved, positions = [], trigger }: AddEditProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPositionLabel, setSelectedPositionLabel] = useState<string>('');

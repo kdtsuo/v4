@@ -1,2 +1,2 @@
-export * from './AddEditPositionDialog';
-export * from './DeletePositionDialog';
+export * from './AddEdit';
+export * from './Delete';

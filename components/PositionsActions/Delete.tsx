@@ -30,17 +30,13 @@ import {
   SelectValue,
 } from '@/components/ui';
 
-type DeletePositionDialogProps = {
+type DeleteProps = {
   positions?: Position[];
   onPositionDeleted: () => void;
   trigger?: React.ReactNode;
 };
 
-export function DeletePositionDialog({
-  positions = [],
-  onPositionDeleted,
-  trigger,
-}: DeletePositionDialogProps) {
+export function Delete({ positions = [], onPositionDeleted, trigger }: DeleteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPositionLabel, setSelectedPositionLabel] = useState<string>('');
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -97,7 +93,7 @@ export function DeletePositionDialog({
           <DialogTitle>Delete Position</DialogTitle>
         </DialogHeader>
         <ScrollArea type='always' className='max-h-[50vh] pr-4 sm:max-h-[70vh]'>
-          <div className='space-y-4 px-2'>
+          <div className='space-y-4'>
             <div className='flex flex-col space-y-2'>
               <Label>Select Position to Delete:</Label>
               <Select
