@@ -9,7 +9,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
-
+const logo = '/assets/img/kdtlogosquare.png';
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -24,6 +24,20 @@ export const metadata: Metadata = {
   title: 'kdt ♥ kpop dance team',
   description:
     'all things kpop at ubco! dance classes, events, performances and meetups for all kpop fans ♥',
+  openGraph: {
+    images: [
+      {
+        url: '/assets/img/kdtlogosquare.png',
+        width: 1200,
+        height: 630,
+        alt: 'KDT Logo',
+      },
+    ],
+  },
+  twitter: {
+    images: ['/assets/img/kdtlogosquare.png'],
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
