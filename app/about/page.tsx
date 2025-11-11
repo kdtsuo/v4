@@ -1,6 +1,3 @@
-'use client';
-import { Activities } from '@/components/';
-import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -21,6 +18,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
   },
 };
+
+// prettier-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+'use client';
+import { Activities } from '@/components/';
+import Image from 'next/image';
 
 export default function About() {
   return (

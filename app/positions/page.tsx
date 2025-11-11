@@ -1,3 +1,26 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'positions ♥ kdt',
+  description: 'apply for open positions in the kpop dance team at ubco!',
+  openGraph: {
+    images: [
+      {
+        url: '/assets/img/kdtlogosquare.png',
+        width: 1200,
+        height: 630,
+        alt: 'KDT Logo',
+      },
+    ],
+  },
+  twitter: {
+    images: ['/assets/img/kdtlogosquare.png'],
+    card: 'summary_large_image',
+  },
+};
+
+// prettier-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
@@ -23,26 +46,6 @@ import {
   SelectValue,
 } from '@/components/ui';
 import * as PositionsActions from '@/components/PositionsActions';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'positions ♥ kdt',
-  description: 'apply for open positions in the kpop dance team at ubco!',
-  openGraph: {
-    images: [
-      {
-        url: '/assets/img/kdtlogosquare.png',
-        width: 1200,
-        height: 630,
-        alt: 'KDT Logo',
-      },
-    ],
-  },
-  twitter: {
-    images: ['/assets/img/kdtlogosquare.png'],
-    card: 'summary_large_image',
-  },
-};
 
 const fallbackPositions: Position[] = [
   {
