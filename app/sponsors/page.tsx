@@ -1,4 +1,5 @@
 'use client';
+import { Spinner, Skeleton } from '@/components/ui';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useAuth, useMediaQuery, useToast } from '@/hooks/';
@@ -257,104 +258,127 @@ export default function Sponsors() {
         }}
       >
         <div className='relative z-10 mx-auto w-full xl:w-3/4'>
-          {/* Top Sponsor Hero Section */}
-          {topSponsor && (
-            <Card
-              className='fade-in-from-bottom fill-mode-both my-6 flex flex-col
-                items-center gap-8 rounded-xl bg-yellow-100/20 p-8 shadow-lg
-                backdrop-blur-sm md:flex-row dark:bg-yellow-900/20'
-            >
-              <div className='shrink-0'>
-                <Avatar
-                  className='size-32 border-4 border-yellow-400 shadow
-                    fade-in-from-bottom'
-                >
-                  <AvatarImage
-                    src={topSponsor.image}
-                    alt={topSponsor.title}
-                    className='object-contain bg-primary-foreground'
-                  />
-                  <AvatarFallback
-                    className='flex items-center justify-center bg-yellow-300 text-2xl
-                      font-bold text-yellow-900'
-                  >
-                    {topSponsor.title?.charAt(0) ?? '?'}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-              <CardContent className='flex-1 text-center md:text-left'>
-                <CardTitle
-                  className='mb-2 flex items-center justify-center gap-2 text-3xl
-                    font-bold text-yellow-700 md:justify-start dark:text-yellow-300
-                    fade-in-from-bottom'
-                >
-                  🌟 Top Sponsor: {topSponsor.title}
-                </CardTitle>
-                <CardDescription className='mb-4 text-lg text-yellow-800
-                  dark:text-yellow-200'>
-                  <p className='fade-in-from-bottom'>
-                    Thank you for supporting us for{' '}
-                    <span className='font-semibold'>
-                      {getTimeSince(topSponsor.created_at).months}{' '}
-                      {getTimeSince(topSponsor.created_at).months === 1
-                        ? 'month'
-                        : 'months'}
-                      {', '}
-                      {getTimeSince(topSponsor.created_at).days}{' '}
-                      {getTimeSince(topSponsor.created_at).days === 1 ? 'day' : 'days'}
-                    </span>
-                  </p>
-                  <Badge className='fade-in-from-bottom' variant='gold'>
-                    {topSponsor.text}
-                  </Badge>
-                </CardDescription>
-                <div
-                  className='flex flex-col justify-center gap-3 md:flex-row
-                    md:justify-start fade-in-from-bottom'
-                >
-                  <Button
-                    variant='default'
-                    onClick={() => window.open(topSponsor.websitelink, '_blank')}
-                  >
-                    Visit Sponsor Website <SquareArrowOutUpRight />
-                  </Button>
-                  <Button
-                    variant='secondary'
-                    onClick={() => window.open(topSponsor.maplink, '_blank')}
-                  >
-                    <MapPin />
-                    {topSponsor.location}
-                    <SquareArrowOutUpRight />
-                  </Button>
+          <Card
+            className='fade-in-from-bottom fill-mode-both my-6 flex flex-col items-center
+              gap-8 rounded-xl bg-yellow-100/20 p-8 shadow-lg backdrop-blur-sm md:flex-row
+              dark:bg-yellow-900/20'
+          >
+            {/* Top Sponsor Hero Section */}
+            {isLoading ? (
+              <div className='flex w-full items-center gap-8'>
+                <Skeleton className='size-32 rounded-full' />
+                <div className='flex-1'>
+                  <Skeleton className='h-8 w-2/3 mb-4' />
+                  <Skeleton className='h-6 w-1/2 mb-2' />
+                  <Skeleton className='h-10 w-full' />
                 </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Loading state */}
-          {isLoading ? (
-            <div className='flex min-h-[200px] items-center justify-center'>
-              <Loader2 className='text-lb-500 h-10 w-10 animate-spin' />
-            </div>
-          ) : (
-            <section>
-              {/* Legacy Sponsors */}
-              <Card className='fade-in-from-right w-full'>
-                <CardHeader>
-                  <CardTitle className='fade-in-from-right text-3xl'>Sponsors</CardTitle>
-                  <CardDescription className='fade-in-from-right'>
-                    Become a sponsor now to help us continue our work!
-                  </CardDescription>
-                  {/* Admin section for logged in users */}
-                  {user && (
-                    <div className='mb-4 flex justify-end'>
-                      <SponsorActions.AddEditSponsorDialog
-                        mode='add'
-                        onSponsorSaved={fetchSponsors}
+              </div>
+            ) : (
+              topSponsor && (
+                <>
+                  <div className='shrink-0'>
+                    <Avatar
+                      className='size-32 border-4 border-yellow-400 shadow
+                        fade-in-from-bottom'
+                    >
+                      <AvatarImage
+                        src={topSponsor.image}
+                        alt={topSponsor.title}
+                        className='object-contain bg-primary-foreground'
                       />
+                      <AvatarFallback
+                        className='flex items-center justify-center bg-yellow-300 text-2xl
+                          font-bold text-yellow-900'
+                      >
+                        {topSponsor.title?.charAt(0) ?? '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <CardContent className='flex-1 text-center md:text-left'>
+                    <CardTitle
+                      className='mb-2 flex items-center justify-center gap-2 text-3xl
+                        font-bold text-yellow-700 md:justify-start dark:text-yellow-300
+                        fade-in-from-bottom'
+                    >
+                      🌟 Top Sponsor: {topSponsor.title}
+                    </CardTitle>
+                    <CardDescription className='mb-4 text-lg text-yellow-800
+                      dark:text-yellow-200'>
+                      <p className='fade-in-from-bottom'>
+                        Thank you for supporting us for{' '}
+                        <span className='font-semibold'>
+                          {getTimeSince(topSponsor.created_at).months}{' '}
+                          {getTimeSince(topSponsor.created_at).months === 1
+                            ? 'month'
+                            : 'months'}
+                          {', '}
+                          {getTimeSince(topSponsor.created_at).days}{' '}
+                          {getTimeSince(topSponsor.created_at).days === 1
+                            ? 'day'
+                            : 'days'}
+                        </span>
+                      </p>
+                      <Badge className='fade-in-from-bottom' variant='gold'>
+                        {topSponsor.text}
+                      </Badge>
+                    </CardDescription>
+                    <div
+                      className='flex flex-col justify-center gap-3 md:flex-row
+                        md:justify-start fade-in-from-bottom'
+                    >
+                      <Button
+                        variant='default'
+                        onClick={() => window.open(topSponsor.websitelink, '_blank')}
+                      >
+                        Visit Sponsor Website <SquareArrowOutUpRight />
+                      </Button>
+                      <Button
+                        variant='secondary'
+                        onClick={() => window.open(topSponsor.maplink, '_blank')}
+                      >
+                        <MapPin />
+                        {topSponsor.location}
+                        <SquareArrowOutUpRight />
+                      </Button>
                     </div>
-                  )}
-                </CardHeader>
+                  </CardContent>
+                </>
+              )
+            )}
+          </Card>
+
+          <section>
+            {/* Legacy Sponsors */}
+            <Card className='fade-in-from-right w-full'>
+              <CardHeader>
+                <CardTitle className='fade-in-from-right text-3xl'>Sponsors</CardTitle>
+                <CardDescription className='fade-in-from-right'>
+                  Become a sponsor now to help us continue our work!
+                </CardDescription>
+                {/* Admin section for logged in users */}
+                {user && (
+                  <div className='mb-4 flex justify-end'>
+                    <SponsorActions.AddEditSponsorDialog
+                      mode='add'
+                      onSponsorSaved={fetchSponsors}
+                    />
+                  </div>
+                )}
+              </CardHeader>
+              {isLoading ? (
+                <div className='flex flex-col gap-8'>
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className='flex gap-4'>
+                      <Skeleton className='size-24 rounded-xl' />
+                      <div className='flex-1 flex flex-col gap-2'>
+                        <Skeleton className='h-6 w-1/2' />
+                        <Skeleton className='h-4 w-1/3' />
+                        <Skeleton className='h-8 w-full' />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <CardContent className='fade-in-from-right flex flex-col gap-8'>
                   {/* Legacy Sponsors */}
                   <div>
@@ -489,9 +513,9 @@ export default function Sponsors() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            </section>
-          )}
+              )}
+            </Card>
+          </section>
         </div>
       </section>
     </div>
