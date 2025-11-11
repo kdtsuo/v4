@@ -154,7 +154,9 @@ const Sponsor: React.FC<
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              window.open(websitelink, '_blank');
+              if (typeof window !== 'undefined') {
+                window.open(websitelink, '_blank');
+              }
             }}
             className='w-full text-lg font-medium md:text-xl'
           >
@@ -166,7 +168,9 @@ const Sponsor: React.FC<
           variant='secondary'
           onClick={(e) => {
             e.stopPropagation();
-            window.open(maplink, '_blank');
+            if (typeof window !== 'undefined') {
+              window.open(maplink, '_blank');
+            }
           }}
         >
           <MapPin />
@@ -320,13 +324,21 @@ export default function Sponsors() {
                   >
                     <Button
                       variant='default'
-                      onClick={() => window.open(topSponsor.websitelink, '_blank')}
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.open(topSponsor.websitelink, '_blank');
+                        }
+                      }}
                     >
                       Visit Sponsor Website <SquareArrowOutUpRight />
                     </Button>
                     <Button
                       variant='secondary'
-                      onClick={() => window.open(topSponsor.maplink, '_blank')}
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.open(topSponsor.maplink, '_blank');
+                        }
+                      }}
                     >
                       <MapPin />
                       {topSponsor.location}
