@@ -99,8 +99,8 @@ function LoginDialog() {
         <DialogHeader>
           <DialogTitle>Login</DialogTitle>
           <DialogDescription>
-            Sign in to your account to edit the website contents. One will be provided to
-            you if you are a team member. Contact the developer for more info.
+            To sign in to your account, one will be provided to you if you are a team
+            member.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSignIn}>
