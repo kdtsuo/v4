@@ -19,34 +19,44 @@ import * as PositionsActions from '@/components/PositionsActions';
 
 const fallbackPositions: Position[] = [
   {
-    label: 'Senior Executive Team',
+    id: '688fea18-10c4-4c83-8ba7-76c29fa931d3',
+    label: 'Executive Team',
     form_url: 'https://forms.gle/ufezb8Gut92E7pMeA',
-    is_accepting_responses: true,
-    description: 'Lead and manage club operations and strategic initiatives.',
+    is_accepting_responses: false,
+    description: 'Executive Team runs the club\'s core operations. We plan events and performances, manage finances, handle promotions, coordinate practices, and represent the team with UBCO and external partners. We keep the club organized, visible, and growing.',
+    created_at: '2025-03-08 07:01:20.911111+00',
   },
   {
-    label: 'Junior Executive Team',
-    form_url: 'https://forms.gle/ufezb8Gut92E7pMeA',
-    is_accepting_responses: true,
-    description: 'Support executive operations and gain leadership experience.',
-  },
-  {
-    label: 'Dance Instructor',
-    form_url: 'https://forms.gle/eciAuTKB63WLQzGg7',
-    is_accepting_responses: true,
-    description: 'Teach and choreograph dance routines for club members.',
-  },
-  {
+    id: 'a3b290a3-b2e1-4924-af94-c554d6436d42',
     label: 'Performance Group',
     form_url: 'https://forms.gle/4CFzbsd3Xn1Lstns8',
     is_accepting_responses: true,
-    description: 'Perform at various events and showcase your dance skills.',
+    description: 'Performance group is for club members who wish to participate in performances and the showcase. Workshops and practice spaces will be provided; however, it will be expected that choreography is self-taught while the Performance Director will focus on formations, detail and quality.',
+    created_at: '2025-03-09 07:01:20.911111+00',
   },
   {
+    id: 'b4fbcd10-aa1c-4b21-b4e7-aec809657fdd',
+    label: 'ACE',
+    form_url: 'https://forms.gle/jUTrkHMrQkKF2RBKA',
+    is_accepting_responses: true,
+    description: 'ACE Group is a performance-focused subunit made up of intermediate-advanced dancers and capable singers who will sing/rap + dance simultaneously, following a K-pop idol training style, but in a positive & supportive environment!',
+    created_at: '2025-08-14 01:38:13.239365+00',
+  },
+  {
+    id: 'b6019b1e-4f69-4315-8f1f-e9cd474d2ba2',
+    label: 'Dance Instructor',
+    form_url: 'https://forms.gle/eciAuTKB63WLQzGg7',
+    is_accepting_responses: true,
+    description: 'Dance Instructors leads weekly classes by teaching choreography selected through member and non-member song voting. They break down routines clearly, guide skill development for all levels, and keep practices structured, fun, and high-energy.',
+    created_at: '2025-03-10 07:01:20.911111+00',
+  },
+  {
+    id: 'e9ab7739-4a07-449c-84b5-5cdb24411e87',
     label: 'Cameraman',
     form_url: 'https://forms.gle/LpXTwzCNKjVZN3De9',
     is_accepting_responses: true,
-    description: 'Capture club events and create engaging visual content.',
+    description: 'Cameraman leads all photography and videography for the club, capturing classes, performances, and events for marketing and promotion. They manage filming, editing, and visual content to maintain a strong online presence and brand image.',
+    created_at: '2025-03-11 07:01:20.911111+00',
   },
 ];
 

@@ -27,10 +27,12 @@ export type IconLinkWideProps = {
 };
 
 export type Position = {
+  id?: string;
   label: string;
   form_url: string;
   is_accepting_responses: boolean;
   description?: string;
+  created_at?: string;
 };
 
 export interface SocialLink {
