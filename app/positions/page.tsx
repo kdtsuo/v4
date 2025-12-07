@@ -180,7 +180,7 @@ export default function Positions() {
             {positionsData.map((position, index) => (
               <Card
                 key={index}
-                className='fade-in-from-bottom relative'
+                className='fade-in-from-bottom justify-between relative'
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Admin buttons */}
@@ -235,16 +235,16 @@ export default function Positions() {
                   )}
                 </CardHeader>
 
-                {!position.is_accepting_responses && (
-                  <CardContent className='flex gap-2'>
-                    {!position.is_accepting_responses && (
+                <CardContent className='flex gap-2'>
+                  {!position.is_accepting_responses && (
+                    <>
                       <X className='h-5 w-5 text-red-500 shrink-0' />
-                    )}
-                    <div className='text-sm text-red-500 font-medium'>
-                      Not accepting applications currently
-                    </div>
-                  </CardContent>
-                )}
+                      <div className='text-sm text-red-500 font-medium'>
+                        Not accepting applications currently
+                      </div>
+                    </>
+                  )}
+                </CardContent>
 
                 <CardFooter className='flex gap-2 flex-wrap'>
                   <Button
