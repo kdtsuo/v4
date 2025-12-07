@@ -74,7 +74,7 @@ const Sponsor: React.FC<
     >
       {/* Admin buttons */}
       {isAdmin && id && (
-        <div className='absolute top-1 right-1 z-20 flex gap-2'>
+        <div className='absolute top-2 right-2 z-20 flex gap-2'>
           <SponsorActions.AddEditSponsorDialog
             mode='edit'
             sponsor={sponsorData}
@@ -259,7 +259,7 @@ export default function Sponsors() {
             topSponsor && (
               <Card
                 className='fade-in-from-bottom fill-mode-both my-6 flex flex-col
-                  items-center gap-8 rounded-xl bg-yellow-100/20 p-8 shadow-lg
+                  items-center gap-4 rounded-xl bg-yellow-100/20 p-8 shadow-lg
                   backdrop-blur-sm md:flex-row dark:bg-yellow-900/20'
               >
                 <div className='shrink-0'>
@@ -352,7 +352,7 @@ export default function Sponsors() {
                   </CardDescription>
                   {/* Admin section for logged in users */}
                   {user && (
-                    <div className='mb-4 flex justify-end'>
+                    <div className='mb-4 flex justify-center'>
                       <SponsorActions.AddEditSponsorDialog
                         mode='add'
                         onSponsorSaved={fetchSponsors}
@@ -360,7 +360,7 @@ export default function Sponsors() {
                     </div>
                   )}
                 </CardHeader>
-                <CardContent className='fade-in-from-right flex flex-col gap-8'>
+                <CardContent className='fade-in-from-right flex flex-col gap-4'>
                   {/* Legacy Sponsors */}
                   <div>
                     <h1 className='mb-4 flex items-center gap-2 text-2xl font-bold'>
@@ -380,7 +380,7 @@ export default function Sponsors() {
                         </TooltipContent>
                       </Tooltip>
                     </h1>
-                    <div className='grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3'>
+                    <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
                       {legacySponsors.length === 0 ? (
                         <div
                           className='text-muted-foreground col-span-full rounded-lg border
@@ -424,7 +424,7 @@ export default function Sponsors() {
                         </TooltipContent>
                       </Tooltip>
                     </h1>
-                    <div className='gap-8xl:grid-cols-3 grid grid-cols-1 md:grid-cols-2'>
+                    <div className='xl:grid-cols-3 grid grid-cols-1 md:grid-cols-2 gap-4'>
                       {veteranSponsors.length === 0 ? (
                         <div
                           className='text-muted-foreground col-span-full rounded-lg border
@@ -468,7 +468,7 @@ export default function Sponsors() {
                         </TooltipContent>
                       </Tooltip>
                     </h1>
-                    <div className='grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3'>
+                    <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
                       {newSponsors.length === 0 ? (
                         <div
                           className='text-muted-foreground col-span-full rounded-lg border
