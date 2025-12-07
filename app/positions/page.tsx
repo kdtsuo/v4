@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useAuth, useToast } from '@/hooks';
 import { supabase } from '@/lib';
 import type { Position } from '@/types';
-import { Clipboard, Edit, ExternalLink, Plus, Trash2, X } from 'lucide-react';
+import { ArrowDown, Clipboard, Edit, ExternalLink, Plus, Trash2, X } from 'lucide-react';
 import {
   Button,
   Card,
@@ -137,8 +137,22 @@ export default function Positions() {
             </p>
           </div>
           {/* Check out positions button that scrolls to  */}
+          <div className='fade-in-from-bottom delay-300'>
+            <Button
+              variant='default'
+              onClick={() => {
+                const section = document.getElementById('positions-section');
+                if (section) {
+                  section.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              Explore Positions <ArrowDown />
+            </Button>
+          </div>
         </div>
       </div>
+      <div id='positions-section'></div>
 
       <Card className='m-10'>
         <CardHeader>
