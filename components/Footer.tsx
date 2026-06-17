@@ -10,8 +10,7 @@ import {
 import { getDelayClass } from '@/utils';
 import { SocialLinks } from '@/lib/data';
 import Image from 'next/image';
-
-const VERSION = '4.0';
+import { ChevronRight } from 'lucide-react';
 
 export function Footer() {
   const getYear = () => {
@@ -20,12 +19,7 @@ export function Footer() {
   };
   const { theme } = useTheme();
   return (
-    <Card
-      className='rounded-none py-10 text-left drop-shadow-lg fade-in border'
-      style={{
-        background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
-      }}
-    >
+    <Card className='rounded-none py-10 text-left drop-shadow-lg fade-in border'>
       <CardContent>
         <div
           className='flex flex-col lg:flex-row w-full items-center lg:justify-between
@@ -35,23 +29,30 @@ export function Footer() {
           <div className='w-full sm:w-1/2 flex justify-center lg:justify-start'>
             <CardHeader>
               <CardTitle>
-                v{VERSION} &copy; est. 2023-{getYear()} KDT (&quot;KPop Dance Team&quot;)
+                &copy; (&quot;KPop Dance Team&quot;) est. 2023-{getYear()} KDT
               </CardTitle>
-              <CardDescription className='text-lg'>
-                <div className='flex items-center space-x-2 text-sm my-2'>
-                  <p>Made with ❤️ by</p>
-                  <span>
-                    <a href='https://rinm.dev' target='_blank' rel='noreferrer'>
-                      <Image
-                        src='/assets/img/rmlogo.png'
-                        alt='rmlogo'
-                        width={64}
-                        height={32}
-                        className='mx-1 h-auto w-16 invert-0 not-dark:invert-100'
-                        priority
-                      />
-                    </a>
-                  </span>
+              <CardDescription className='text-lg text-center justify-center'>
+                <div className='flex items-center gap-2 text-sm my-2 justify-center'>
+                  <p>built by</p>
+                  <a href='https://web8th.com' target='_blank' rel='noreferrer'>
+                    <Image
+                      src='/8th_svg.svg'
+                      alt='Web8th'
+                      width={48}
+                      height={48}
+                      className='not-dark:invert-100'
+                    />
+                  </a>
+                  <ChevronRight className='text-muted-foreground' />
+                  <a href='https://rinm.dev' target='_blank' rel='noreferrer'>
+                    <Image
+                      src='/assets/img/rmlogo.png'
+                      alt='rmlogo'
+                      width={48}
+                      height={48}
+                      className='not-dark:invert-100'
+                    />
+                  </a>
                 </div>
                 <div className='text-sm'>
                   All photos are provided by{' '}
