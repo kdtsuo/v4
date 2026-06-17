@@ -5,7 +5,7 @@ import { DiscoverLinks } from '@/lib/data';
 
 export function Discover() {
   return (
-    <section className='container mx-auto mb-4 mt-10'>
+    <section className='container mx-auto px-4 mb-4 mt-10'>
       <div className='fade-in-from-bottom mb-6 text-center'>
         <p
           className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
