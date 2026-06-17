@@ -11,22 +11,17 @@ import {
   AvatarFallback,
   AvatarImage,
   Badge,
+  Button,
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Button,
 } from '@/components/ui';
 import * as ContactsAction from '@/components/ContactsActions';
-
 import Image from 'next/image';
+import { getDelayClass } from '@/utils';
 
 const instagramIcon = '/assets/img/icons/instagram.svg';
 const linkedinIcon = '/assets/img/icons/linkedin.svg';
 const githubIcon = '/assets/img/icons/github.svg';
-
-import { getDelayClass } from '@/utils';
 
 export default function Contacts() {
   const { theme } = useTheme();
@@ -44,9 +39,7 @@ export default function Contacts() {
         .eq('is_archived', false)
         .order('order_index', { ascending: true });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       if (data && data.length > 0) {
         setTeamMembers(data);
@@ -66,7 +59,6 @@ export default function Contacts() {
     fetchTeamMembers();
   }, [fetchTeamMembers]);
 
-  // Sort team members: president(s) first, then VPs alphabetically, then others, then Jrs alphabetically
   const sortedMembers = [...teamMembers].sort((a, b) => {
     const roleA = a.role.toLowerCase();
     const roleB = b.role.toLowerCase();
@@ -78,125 +70,128 @@ export default function Contacts() {
     const isJrA = roleA.includes('jr');
     const isJrB = roleB.includes('jr');
 
-    // President(s) first
     if (isPresidentA && !isPresidentB) return -1;
     if (!isPresidentA && isPresidentB) return 1;
-
-    // VPs next, sorted alphabetically
     if (isVpA && !isVpB) return -1;
     if (!isVpA && isVpB) return 1;
-    if (isVpA && isVpB) {
-      return a.full_name.localeCompare(b.full_name);
-    }
-
-    // Jrs last, sorted alphabetically
+    if (isVpA && isVpB) return a.full_name.localeCompare(b.full_name);
     if (isJrA && !isJrB) return 1;
     if (!isJrA && isJrB) return -1;
-    if (isJrA && isJrB) {
-      return a.full_name.localeCompare(b.full_name);
-    }
-
-    // Others in the middle, keep original order
+    if (isJrA && isJrB) return a.full_name.localeCompare(b.full_name);
     return 0;
   });
 
   return (
-    <>
-      <div
-        className='animate-fade-in pt-36 pb-12 min-h-screen'
+    <div className='animate-fade-in overflow-x-hidden'>
+      <section
+        className='min-h-screen pb-12 pt-28'
         style={{
           background: `var(--bg-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
         }}
       >
-        <Card className='sm:mx-auto max-w-6xl mx-4 fade-in-from-top'>
-          <CardHeader>
-            <div className='flex justify-between items-center'>
-              <div className='flex-1'>
-                <CardTitle className='text-3xl text-center'>Meet KDT</CardTitle>
-                <CardDescription className='text-center'>
-                  Here&apos;s our amazing team that makes everything impossible possible!
-                </CardDescription>
-              </div>
+        <div className='container mx-auto px-4'>
+          {/* Section header */}
+          <div className='fade-in-from-bottom mb-10 text-center'>
+            <p
+              className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
+                text-muted-foreground'
+            >
+              Our Team
+            </p>
+            <h2 className='text-3xl font-bold md:text-5xl'>Meet KDT</h2>
+            <p className='mt-3 text-muted-foreground'>
+              Here&apos;s our amazing team that makes everything impossible possible!
+            </p>
+          </div>
+
+          {/* Admin — add member */}
+          {user && (
+            <div className='fade-in-from-bottom mb-6 flex justify-center'>
+              <ContactsAction.AddEditMemberDialog
+                mode='add'
+                onMemberSaved={fetchTeamMembers}
+              />
             </div>
-          </CardHeader>
-          <CardContent>
-            {user && (
-              <div className='w-full flex justify-center mb-4'>
-                <ContactsAction.AddEditMemberDialog
-                  mode='add'
-                  onMemberSaved={fetchTeamMembers}
-                />
-              </div>
-            )}
-            {isLoading ? (
-              <div className='flex min-h-[200px] items-center justify-center pb-[1000px]'>
-                <Loader2 className='size-10 animate-spin text-muted-foreground' />
-              </div>
-            ) : (
-              <div className='flex flex-wrap justify-center gap-6 fade-in-from-top'>
-                {sortedMembers.map((member, index) => (
-                  <Card
-                    key={member.id}
-                    className={`w-full max-w-xs relative fade-in-from-top
-                      ${getDelayClass(index)}`}
-                  >
-                    {user && (
-                      <div className='absolute top-2 right-2 z-20 flex gap-2'>
-                        <ContactsAction.AddEditMemberDialog
-                          mode='edit'
-                          member={member}
-                          onMemberSaved={fetchTeamMembers}
-                          trigger={
-                            <Button
-                              className='h-8 w-8 p-0'
-                              variant='secondary'
-                              size='sm'
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Edit size={16} />
-                            </Button>
-                          }
-                        />
-                        <ContactsAction.DeleteMemberDialog
-                          member={member}
-                          onMemberDeleted={fetchTeamMembers}
-                        />
+          )}
+
+          {/* Grid */}
+          {isLoading ? (
+            <div className='flex min-h-[200px] items-center justify-center'>
+              <Loader2 className='size-10 animate-spin text-muted-foreground' />
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+              {sortedMembers.map((member, index) => (
+                <Card
+                  key={member.id}
+                  className={`fade-in-from-bottom ${getDelayClass(index)} relative`}
+                >
+                  {user && (
+                    <div className='absolute right-2 top-2 z-10 flex gap-1.5'>
+                      <ContactsAction.AddEditMemberDialog
+                        mode='edit'
+                        member={member}
+                        onMemberSaved={fetchTeamMembers}
+                        trigger={
+                          <Button
+                            className='size-8 p-0'
+                            variant='secondary'
+                            size='sm'
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Edit />
+                          </Button>
+                        }
+                      />
+                      <ContactsAction.DeleteMemberDialog
+                        member={member}
+                        onMemberDeleted={fetchTeamMembers}
+                      />
+                    </div>
+                  )}
+
+                  <CardContent className='flex items-start gap-4 p-5'>
+                    <Avatar className='size-16 shrink-0'>
+                      <AvatarImage
+                        src={member.profile_image_url}
+                        alt={member.full_name}
+                      />
+                      <AvatarFallback>
+                        {(() => {
+                          const names = member.full_name.split(' ');
+                          return names.length >= 2
+                            ? `${names[0][0]}${names[1][0]}`
+                            : names[0][0];
+                        })()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className='flex min-w-0 flex-1 flex-col gap-1'>
+                      <div className='flex items-start justify-between gap-2'>
+                        <h3 className='text-lg font-bold leading-tight'>
+                          {member.full_name}
+                        </h3>
+                        <MemberSocialLinks member={member} />
                       </div>
-                    )}
-                    <CardHeader className='flex flex-col items-center'>
-                      <Avatar className='size-20'>
-                        <AvatarImage
-                          src={member.profile_image_url}
-                          alt={member.full_name}
-                        />
-                        <AvatarFallback>
-                          {(() => {
-                            const names = member.full_name.split(' ');
-                            return names.length >= 2
-                              ? `${names[0][0]}${names[1][0]}`
-                              : names[0][0];
-                          })()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <CardTitle className='text-center'>{member.full_name}</CardTitle>
-                      <Badge variant={getBadgeVariant(member.role)} className=''>
+
+                      <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
                         {member.role}
                       </Badge>
-                      <MemberSocialLinks member={member} />
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className='text-center'>
-                        {member.bio}
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-    </>
+
+                      {member.bio && (
+                        <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+                          {member.bio}
+                        </p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -211,15 +206,15 @@ function getBadgeVariant(role: string) {
 
 function MemberSocialLinks({ member }: { member: TeamMember }) {
   return (
-    <div className='flex justify-center gap-2'>
+    <div className='flex shrink-0 gap-1'>
       {member.instagram_url && (
         <a href={member.instagram_url} target='_blank' rel='noopener noreferrer'>
           <Button size='icon' variant='outline' className='rounded-full'>
             <Image
               src={instagramIcon}
               alt='Instagram'
-              width={20}
-              height={20}
+              width={16}
+              height={16}
               className='invert-100 not-dark:invert-0'
             />
           </Button>
@@ -231,8 +226,8 @@ function MemberSocialLinks({ member }: { member: TeamMember }) {
             <Image
               src={linkedinIcon}
               alt='LinkedIn'
-              width={20}
-              height={20}
+              width={16}
+              height={16}
               className='invert-100 not-dark:invert-0'
             />
           </Button>
@@ -244,8 +239,8 @@ function MemberSocialLinks({ member }: { member: TeamMember }) {
             <Image
               src={githubIcon}
               alt='GitHub'
-              width={20}
-              height={20}
+              width={16}
+              height={16}
               className='invert-100 not-dark:invert-0'
             />
           </Button>

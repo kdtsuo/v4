@@ -240,12 +240,11 @@ export default function Positions() {
                             onPositionSaved={fetchPositionFromDatabase}
                             trigger={
                               <Button
-                                className='h-7 w-7 p-0'
                                 variant='secondary'
-                                size='sm'
+                                size='icon'
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <Edit className='h-3.5 w-3.5' />
+                                <Edit />
                               </Button>
                             }
                           />
@@ -254,12 +253,11 @@ export default function Positions() {
                             onPositionDeleted={fetchPositionFromDatabase}
                             trigger={
                               <Button
-                                className='h-7 w-7 p-0'
                                 variant='destructive'
-                                size='sm'
+                                size='icon'
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                <Trash2 className='h-3.5 w-3.5' />
+                                <Trash2 />
                               </Button>
                             }
                           />
