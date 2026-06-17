@@ -158,7 +158,7 @@ export default function Positions() {
           background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
         }}
       >
-        <div className='container mx-auto mb-10 rounded-2xl px-4 py-10'>
+        <div className='container mx-auto rounded-2xl px-4 py-10'>
           {/* Section header */}
           <div className='fade-in-from-bottom mb-10 text-center'>
             <p

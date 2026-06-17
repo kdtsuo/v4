@@ -89,7 +89,7 @@ export default function Contacts() {
           background: `var(--bg-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
         }}
       >
-        <div className='container mx-auto px-4'>
+        <div className='container mx-auto px-4 pt-10'>
           {/* Section header */}
           <div className='fade-in-from-bottom mb-10 text-center'>
             <p

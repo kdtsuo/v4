@@ -104,7 +104,7 @@ export function Activities() {
         background: `var(--bg-less-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
       }}
     >
-      <div className='container mx-auto mb-10 mt-12 px-4'>
+      <div className='container mx-auto py-10 px-4'>
         <div className='fade-in-from-bottom mb-10 text-center'>
           <p
             className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]

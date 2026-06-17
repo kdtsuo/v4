@@ -21,7 +21,7 @@ export function Footer() {
   const { theme } = useTheme();
   return (
     <Card
-      className='rounded-none border-none py-10 text-left drop-shadow-lg fade-in'
+      className='rounded-none py-10 text-left drop-shadow-lg fade-in border'
       style={{
         background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
       }}
