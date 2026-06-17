@@ -1,21 +1,25 @@
 'use client';
 import { getDelayClass } from '@/utils';
 import { DiscoverCard } from '@/components/';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
 import { DiscoverLinks } from '@/lib/data';
 
 export function Discover() {
   return (
-    <Card className='fade-in-from-bottom mx-4 text-center'>
-      <CardHeader>
-        <CardTitle>
-          <div className='fade-in-from-bottom text-3xl font-bold md:text-5xl'>
-            Discover More
-          </div>
-        </CardTitle>
-      </CardHeader>
+    <section className='container mx-auto mb-4 mt-10'>
+      <div className='fade-in-from-bottom mb-6 text-center'>
+        <p
+          className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
+            text-muted-foreground'
+        >
+          Explore
+        </p>
+        <h2 className='text-3xl font-bold md:text-5xl'>Discover More</h2>
+      </div>
 
-       <CardContent className='flex flex-wrap justify-center gap-4'>
+      <div
+        className='grid auto-rows-[240px] grid-cols-1 gap-4 sm:grid-cols-2
+          sm:auto-rows-[260px] lg:grid-cols-3'
+      >
         {DiscoverLinks.map((card, index) => (
           <DiscoverCard
             key={`${card.title}-${index}`}
@@ -25,11 +29,16 @@ export function Discover() {
             image={card.image}
             link={card.link}
             isOpen={card.isOpen}
-            className={`fade-in-from-bottom aspect-video w-full xl:w-1/4
-            ${getDelayClass(index)}`}
+            className={`fade-in-from-bottom ${getDelayClass(index)}${
+              index === 0
+                ? ' lg:col-span-2 lg:row-span-2'
+                : index === 3
+                  ? ' lg:col-span-3'
+                  : ''
+            }`}
           />
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }

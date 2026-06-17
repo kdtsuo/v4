@@ -1,14 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui';
 
 interface DiscoverCardProps {
   className?: string;
@@ -32,35 +25,55 @@ export function DiscoverCard({
   return (
     <Link
       href={link}
-      className={`t200e block ${!isOpen ? 'opacity-50' : 'opacity-100'} ${className}`}
+      className={`group block h-full ${!isOpen ? 'pointer-events-none opacity-50' : ''}
+        ${className}`}
     >
-      <Card className='group border-ring t200e relative h-full overflow-hidden shadow-lg'>
+      <div className='relative h-full overflow-hidden rounded-2xl shadow-lg'>
         <Image
           src={image}
           alt={title}
           fill
-          className='t200e absolute inset-0 object-cover object-center'
+          className='object-cover object-center t200e group-hover:scale-105 brightness-50
+            group-hover:brightness-100'
           priority
         />
-        <div className='t200e absolute inset-0 bg-black opacity-75 group-hover:opacity-60' />
-        <div className='t200e absolute inset-0 opacity-25 group-hover:opacity-40' />
         <div
-          className='relative z-10 flex h-full flex-col items-center justify-center p-6
-            text-center'
-        >
-          <CardHeader className='pb-2'>
-            {Icon && <Icon size={25} strokeWidth={2} className='mx-auto text-white' />}
-            <CardTitle className='text-lg font-bold text-white md:text-3xl'>
-              {title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className='pt-0'>
-            <CardDescription className='t200e text-sm text-gray-200 md:text-xl'>
-              {description}
-            </CardDescription>
-          </CardContent>
+          className='absolute inset-0 bg-linear-to-t from-black/90 via-black/30
+            to-black/10 transition-all duration-300 group-hover:from-black/75'
+        />
+
+        {Icon && (
+          <div
+            className='absolute left-4 top-4 rounded-full bg-white/20 p-2.5
+              backdrop-blur-sm transition-all duration-300 group-hover:bg-white/30'
+          >
+            <Icon size={16} strokeWidth={2} className='text-white' />
+          </div>
+        )}
+
+        <div className='absolute bottom-0 left-0 right-0 p-5'>
+          <div className='flex items-end justify-between'>
+            <div className='flex-1'>
+              <h3 className='text-xl font-bold text-white md:text-2xl'>{title}</h3>
+              <p
+                className='mt-1 translate-y-2 text-sm text-gray-300 opacity-0
+                  transition-all duration-300 group-hover:translate-y-0
+                  group-hover:opacity-100'
+              >
+                {description}
+              </p>
+            </div>
+            <div
+              className='ml-3 flex translate-x-2 items-center gap-1 opacity-0
+                transition-all duration-300 group-hover:translate-x-0
+                group-hover:opacity-100'
+            >
+              <span className='text-xs font-semibold text-white'>Explore</span>
+              <ArrowRight size={14} className='text-white' />
+            </div>
+          </div>
         </div>
-      </Card>
+      </div>
     </Link>
   );
 }
