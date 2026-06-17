@@ -1,81 +1,86 @@
 'use client';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  Separator,
 } from '@/components/ui';
+import { getDelayClass } from '@/utils';
 
 interface ActivityProps {
   images: string[];
   title: string;
   text: string;
-  reverse: boolean;
-  isLast?: boolean;
+  index: number;
 }
 
-function Activity({ images, title, text, reverse, isLast = false }: ActivityProps) {
-  return (
-    <div className='flex w-full flex-col items-center'>
-      <div
-        className={`flex flex-col ${reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'}
-          w-full items-center justify-center overflow-hidden md:space-x-4`}
-      >
-        <div className='flex w-full justify-center px-10 py-6 lg:w-1/2'>
-          <Carousel className='w-11/12 rounded-xl border lg:w-5/6'>
-            <CarouselContent>
-              {images.map((img, index) => (
-                <CarouselItem key={index}>
-                  <div className='relative h-64 w-full'>
-                    <Image
-                      src={img}
-                      alt={`${title} image`}
-                      fill
-                      className='rounded-xl object-cover shadow-lg'
-                      sizes='(max-width: 768px) 100vw, 50vw'
-                      priority={index === 0}
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-        </div>
+function Activity({ images, title, text, index }: ActivityProps) {
+  const isReverse = index % 2 !== 0;
 
-        <Card className='t200e w-full max-w-lg shadow-lg hover:-translate-y-3 lg:w-1/2'>
-          <CardHeader>
-            <CardTitle className='text-2xl capitalize lg:text-3xl'>{title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CardDescription className='text-lg leading-relaxed'>{text}</CardDescription>
-          </CardContent>
-        </Card>
+  return (
+    <div
+      className={`fade-in-from-bottom ${getDelayClass(index)} flex flex-col
+        overflow-hidden border rounded-2xl shadow-lg lg:h-[420px] lg:flex-row
+        ${isReverse ? 'lg:flex-row-reverse' : ''}`}
+    >
+      <div className='relative w-full lg:w-3/5'>
+        <Carousel className='h-full w-full'>
+          <CarouselContent>
+            {images.map((img, i) => (
+              <CarouselItem key={i}>
+                <div className='relative h-72 w-full lg:h-[420px]'>
+                  <Image
+                    src={img}
+                    alt={`${title} image ${i + 1}`}
+                    fill
+                    className='object-cover'
+                    sizes='(max-width: 1024px) 100vw, 60vw'
+                    priority={i === 0 && index === 0}
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {images.length > 1 && (
+            <>
+              <CarouselPrevious
+                className='left-4 border-white/30 bg-black/30 text-white backdrop-blur-sm
+                  hover:bg-black/50 hover:text-white'
+              />
+              <CarouselNext
+                className='right-4 border-white/30 bg-black/30 text-white backdrop-blur-sm
+                  hover:bg-black/50 hover:text-white'
+              />
+            </>
+          )}
+        </Carousel>
       </div>
 
-      {!isLast && <Separator className='my-10 w-1/2 rounded-full' />}
+      <div className='flex w-full flex-col justify-center gap-4 bg-card p-8 lg:w-2/5'>
+        <p
+          className='text-xs font-semibold uppercase tracking-[0.2em]
+            text-muted-foreground'
+        >
+          Activity 0{index + 1}
+        </p>
+        <h3 className='text-3xl font-bold lg:text-4xl'>{title}</h3>
+        <p className='leading-relaxed text-muted-foreground'>{text}</p>
+      </div>
     </div>
   );
 }
 
 export function Activities() {
   const { theme } = useTheme();
-  const activities: ActivityProps[] = [
+
+  const activities = [
     {
       images: ['/assets/img/stock/dancepractice.png'],
       title: 'Dance Workshops',
       text: 'We provide drop-in dance classes for the general public and extra dance practices for performance groups! Learn from experienced instructors in a fun, supportive environment.',
-      reverse: false,
     },
     {
       images: [
@@ -85,41 +90,43 @@ export function Activities() {
       ],
       title: 'K-Pop Events',
       text: 'We host K-pop related events including random dance challenges, watch parties, karaokes, and other activities that promote K-pop and Korean culture!',
-      reverse: true,
     },
     {
       images: ['/assets/img/stock/showcase.jpeg'],
       title: 'K-Fest Showcase',
       text: 'Annually, we host K-pop dance concerts to showcase our dance skills and creativity! Join us for an unforgettable experience celebrating K-pop performance.',
-      reverse: false,
-      isLast: true,
     },
   ];
 
   return (
-    <Card
-      className='m-5 mt-10'
+    <section
       style={{
         background: `var(--bg-less-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
       }}
     >
-      <CardHeader>
-        <CardTitle className='text-center text-6xl'>Activities</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div>
+      <div className='container mx-auto mb-10 mt-12 px-4'>
+        <div className='fade-in-from-bottom mb-10 text-center'>
+          <p
+            className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
+              text-muted-foreground'
+          >
+            What We Do
+          </p>
+          <h2 className='text-3xl font-bold md:text-5xl'>Activities</h2>
+        </div>
+
+        <div className='flex flex-col gap-6'>
           {activities.map((activity, index) => (
             <Activity
               key={index}
               images={activity.images}
               title={activity.title}
               text={activity.text}
-              reverse={activity.reverse}
-              isLast={activity.isLast}
+              index={index}
             />
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
