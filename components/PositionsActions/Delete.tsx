@@ -1,7 +1,6 @@
-'use client';
+ 'use client';
 import { useState } from 'react';
 import { useToast } from '@/hooks';
-import { supabase } from '@/lib';
 import type { Position } from '@/types';
 import { Loader2 } from 'lucide-react';
 import {
@@ -35,19 +34,22 @@ export function Delete({ position, onPositionDeleted, trigger }: DeleteProps) {
 
     setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from('positions')
-        .delete()
-        .eq('id', position.id);
+      const res = await fetch('/api/positions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: position.id }),
+      });
 
-      if (error) throw error;
+      if (!res.ok) {
+        toast.error('Failed to delete position. Please try again.');
+        return;
+      }
 
       toast.success('Position deleted successfully!');
       setConfirmOpen(false);
       onPositionDeleted();
-    } catch (error) {
+    } catch  {
       toast.error('Failed to delete position. Please try again.');
-      throw error;
     } finally {
       setIsDeleting(false);
     }

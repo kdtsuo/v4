@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useToast } from '@/hooks';
-import { supabase } from '@/lib';
 import type { Position } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -80,41 +79,31 @@ export function AddEdit({ onPositionSaved, position, trigger }: AddEditProps) {
   const handleSubmit = async (values: z.infer<typeof positionSchema>) => {
     setIsSubmitting(true);
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const res = await fetch('/api/positions', {
+        method: mode === 'add' ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:
+          mode === 'add'
+            ? JSON.stringify(values)
+            : JSON.stringify({ id: position?.id, ...values }),
+      });
 
-      if (!user) {
-        toast.error('You must be logged in to manage positions');
+      if (!res.ok) {
+        const message = (mode === 'add' ? 'Failed to add position.' : 'Failed to update position.');
+        toast.error(message + ' Please try again.');
         return;
       }
 
-      if (mode === 'add') {
-        const { error } = await supabase.from('positions').insert([
-          {
-            ...values,
-          },
-        ]);
-        if (error) throw error;
-        toast.success('Position added successfully!');
-      } else if (mode === 'edit' && position?.id) {
-        const { error } = await supabase
-          .from('positions')
-          .update(values)
-          .eq('id', position.id);
-        if (error) throw error;
-        toast.success('Position updated successfully!');
-      }
+      toast.success(mode === 'add' ? 'Position added successfully!' : 'Position updated successfully!');
       form.reset();
       setIsOpen(false);
       onPositionSaved();
-    } catch (error) {
+    } catch {
       toast.error(
         mode === 'add'
           ? 'Failed to add position. Please try again.'
           : 'Failed to update position. Please try again.'
       );
-      throw error;
     } finally {
       setIsSubmitting(false);
     }
