@@ -32,6 +32,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui';
 import { getDelayClass } from '@/utils/animations';
+import { Text } from '@/components/Text';
 import Image from 'next/image';
 
 const Sponsor: React.FC<
@@ -128,7 +129,9 @@ const Sponsor: React.FC<
             {imageError ? (
               <div className='flex flex-col items-center justify-center'>
                 <ImageIcon size={48} className='mb-2 text-gray-300' />
-                <span className='text-sm text-gray-500'>{title}</span>
+                <Text as='span' variant='default' size='sm' className='text-gray-500'>
+                  {title}
+                </Text>
               </div>
             ) : (
               <Image
@@ -286,11 +289,11 @@ export default function Sponsors() {
                       font-bold text-yellow-700 md:justify-start dark:text-yellow-300
                       fade-in-from-bottom'
                   >
-                    🌟 Top Sponsor: {topSponsor.title}
+                    <Text variant='hd-sm'>🌟 Top Sponsor: {topSponsor.title}</Text>
                   </CardTitle>
                   <CardDescription className='mb-4 text-lg text-yellow-800
                     dark:text-yellow-200'>
-                    <p className='fade-in-from-bottom'>
+                    <div className='fade-in-from-bottom'>
                       Thank you for supporting us for{' '}
                       <span className='font-semibold'>
                         {getTimeSince(topSponsor.created_at).months}{' '}
@@ -301,7 +304,7 @@ export default function Sponsors() {
                         {getTimeSince(topSponsor.created_at).days}{' '}
                         {getTimeSince(topSponsor.created_at).days === 1 ? 'day' : 'days'}
                       </span>
-                    </p>
+                    </div>
                     <Badge className='fade-in-from-bottom' variant='gold'>
                       {topSponsor.text}
                     </Badge>
@@ -346,7 +349,9 @@ export default function Sponsors() {
               {/* Legacy Sponsors */}
               <Card className='fade-in-from-right w-full'>
                 <CardHeader>
-                  <CardTitle className='fade-in-from-right text-3xl'>Sponsors</CardTitle>
+                  <CardTitle className='fade-in-from-right text-3xl'>
+                    <Text variant='hd-sm'>Sponsors</Text>
+                  </CardTitle>
                   <CardDescription className='fade-in-from-right'>
                     Become a sponsor now to help us continue our work!
                   </CardDescription>
@@ -363,7 +368,7 @@ export default function Sponsors() {
                 <CardContent className='fade-in-from-right flex flex-col gap-4'>
                   {/* Legacy Sponsors */}
                   <div>
-                    <h1 className='mb-4 flex items-center gap-2 text-2xl font-bold'>
+                    <Text variant='hd-xxl' className='mb-4 flex items-center gap-2'>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span
@@ -379,7 +384,7 @@ export default function Sponsors() {
                           months.
                         </TooltipContent>
                       </Tooltip>
-                    </h1>
+                    </Text>
                     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
                       {legacySponsors.length === 0 ? (
                         <div
@@ -408,7 +413,7 @@ export default function Sponsors() {
 
                   {/* Veteran Sponsors */}
                   <div>
-                    <h1 className='mb-4 flex items-center gap-2 text-2xl font-bold'>
+                    <Text variant='hd-xxl' className='mb-4 flex items-center gap-2'>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span
@@ -423,7 +428,7 @@ export default function Sponsors() {
                           Sponsors who have been with us for 4-7 months.
                         </TooltipContent>
                       </Tooltip>
-                    </h1>
+                    </Text>
                     <div className='xl:grid-cols-3 grid grid-cols-1 md:grid-cols-2 gap-4'>
                       {veteranSponsors.length === 0 ? (
                         <div
@@ -452,7 +457,7 @@ export default function Sponsors() {
 
                   {/* New Sponsors */}
                   <div>
-                    <h1 className='mb-4 flex items-center gap-2 text-2xl font-bold'>
+                    <Text variant='hd-xxl' className='mb-4 flex items-center gap-2'>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <span
@@ -467,7 +472,7 @@ export default function Sponsors() {
                           Sponsors who joined us within the last 3 months.
                         </TooltipContent>
                       </Tooltip>
-                    </h1>
+                    </Text>
                     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
                       {newSponsors.length === 0 ? (
                         <div

@@ -1,5 +1,6 @@
 'use client';
 import { getDelayClass } from '@/utils';
+import { Text } from '@/components/Text';
 import { DiscoverCard } from '@/components/';
 import { DiscoverLinks } from '@/lib/data';
 
@@ -7,13 +8,14 @@ export function Discover() {
   return (
     <section className='container mx-auto px-4 mb-4 mt-10'>
       <div className='fade-in-from-bottom mb-6 text-center'>
-        <p
-          className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
-            text-muted-foreground'
+        <Text
+          variant='caption'
+          size='xs'
+          className='mb-1 font-semibold uppercase tracking-[0.2em]'
         >
           Explore
-        </p>
-        <h2 className='text-3xl font-bold md:text-5xl'>Discover More</h2>
+        </Text>
+        <Text variant='hd-xl'>Discover More</Text>
       </div>
 
       <div

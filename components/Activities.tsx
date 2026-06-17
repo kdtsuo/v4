@@ -9,6 +9,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui';
 import { getDelayClass } from '@/utils';
+import { Text } from '@/components/Text';
 
 interface ActivityProps {
   images: string[];
@@ -60,14 +61,17 @@ function Activity({ images, title, text, index }: ActivityProps) {
       </div>
 
       <div className='flex w-full flex-col justify-center gap-4 bg-card p-8 lg:w-2/5'>
-        <p
-          className='text-xs font-semibold uppercase tracking-[0.2em]
-            text-muted-foreground'
+        <Text
+          variant='caption'
+          size='xs'
+          className='font-semibold uppercase tracking-[0.2em]'
         >
           Activity 0{index + 1}
-        </p>
-        <h3 className='text-3xl font-bold lg:text-4xl'>{title}</h3>
-        <p className='leading-relaxed text-muted-foreground'>{text}</p>
+        </Text>
+        <Text variant='hd-lg'>{title}</Text>
+        <Text variant='muted' className='leading-relaxed'>
+          {text}
+        </Text>
       </div>
     </div>
   );
@@ -106,13 +110,14 @@ export function Activities() {
     >
       <div className='container mx-auto py-10 px-4'>
         <div className='fade-in-from-bottom mb-10 text-center'>
-          <p
-            className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
-              text-muted-foreground'
+          <Text
+            variant='caption'
+            size='xs'
+            className='mb-1 font-semibold uppercase tracking-[0.2em]'
           >
             What We Do
-          </p>
-          <h2 className='text-3xl font-bold md:text-5xl'>Activities</h2>
+          </Text>
+          <Text variant='hd-xl'>Activities</Text>
         </div>
 
         <div className='flex flex-col gap-6'>

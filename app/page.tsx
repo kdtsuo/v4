@@ -1,6 +1,7 @@
 'use client';
 import { Discover, LinkTrees } from '@/components/';
 import { useTheme } from 'next-themes';
+import { Text } from '@/components/Text';
 
 export default function Home() {
   const { theme } = useTheme();
@@ -14,9 +15,9 @@ export default function Home() {
         }}
       >
         <div className='text-center text-xl md:text-4xl'>
-          <h1>all things kpop at ubco!</h1>
-          <h1>dance classes, events, performances</h1>
-          <h1>and meetups for all kpop fans ♥</h1>
+          <Text variant='hd-lg'>all things kpop at ubco!</Text>
+          <Text variant='hd-lg'>dance classes, events, performances</Text>
+          <Text variant='hd-lg'>and meetups for all kpop fans ♥</Text>
         </div>
         <div className='flex w-full justify-center'>
           <LinkTrees />

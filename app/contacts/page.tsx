@@ -18,6 +18,7 @@ import {
 import * as ContactsAction from '@/components/ContactsActions';
 import Image from 'next/image';
 import { getDelayClass } from '@/utils';
+import { Text } from '@/components/Text';
 
 const instagramIcon = '/assets/img/icons/instagram.svg';
 const linkedinIcon = '/assets/img/icons/linkedin.svg';
@@ -92,16 +93,17 @@ export default function Contacts() {
         <div className='container mx-auto px-4 pt-10'>
           {/* Section header */}
           <div className='fade-in-from-bottom mb-10 text-center'>
-            <p
-              className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
-                text-muted-foreground'
+            <Text
+              variant='caption'
+              size='xs'
+              className='mb-1 font-semibold uppercase tracking-[0.2em]'
             >
               Our Team
-            </p>
-            <h2 className='text-3xl font-bold md:text-5xl'>Meet KDT</h2>
-            <p className='mt-3 text-muted-foreground'>
+            </Text>
+            <Text variant='hd-xl'>Meet KDT</Text>
+            <Text variant='muted' className='mt-3'>
               Here&apos;s our amazing team that makes everything impossible possible!
-            </p>
+            </Text>
           </div>
 
           {/* Admin — add member */}
@@ -168,9 +170,9 @@ export default function Contacts() {
 
                     <div className='flex min-w-0 flex-1 flex-col gap-1'>
                       <div className='flex items-start justify-between gap-2'>
-                        <h3 className='text-lg font-bold leading-tight'>
+                        <Text variant='hd-lg' className='leading-tight'>
                           {member.full_name}
-                        </h3>
+                        </Text>
                         <MemberSocialLinks member={member} />
                       </div>
 
@@ -179,9 +181,9 @@ export default function Contacts() {
                       </Badge>
 
                       {member.bio && (
-                        <p className='mt-1 text-sm leading-relaxed text-muted-foreground'>
+                        <Text variant='muted' size='sm' className='mt-1 leading-relaxed'>
                           {member.bio}
-                        </p>
+                        </Text>
                       )}
                     </div>
                   </CardContent>

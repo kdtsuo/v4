@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { LucideIcon, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { Text } from '@/components/Text';
 
 interface DiscoverCardProps {
   className?: string;
@@ -54,21 +55,23 @@ export function DiscoverCard({
         <div className='absolute bottom-0 left-0 right-0 p-5'>
           <div className='flex items-end justify-between'>
             <div className='flex-1'>
-              <h3 className='text-xl font-bold text-white md:text-2xl'>{title}</h3>
-              <p
-                className='mt-1 translate-y-2 text-sm text-gray-300 opacity-0
+              <Text variant='hd-lg' className='text-white'>{title}</Text>
+              <Text
+                variant='default'
+                size='sm'
+                className='mt-1 translate-y-2 text-gray-300 opacity-0
                   transition-all duration-300 group-hover:translate-y-0
                   group-hover:opacity-100'
               >
                 {description}
-              </p>
+              </Text>
             </div>
             <div
               className='ml-3 flex translate-x-2 items-center gap-1 opacity-0
                 transition-all duration-300 group-hover:translate-x-0
                 group-hover:opacity-100'
             >
-              <span className='text-xs font-semibold text-white'>Explore</span>
+              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>Explore</Text>
               <ArrowRight size={14} className='text-white' />
             </div>
           </div>

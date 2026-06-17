@@ -5,6 +5,7 @@ import { getDelayClass } from '@/utils';
 import { SocialLinks } from '@/lib/data';
 import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
+import { Text } from '@/components/Text';
 
 export function Footer() {
   return (
@@ -12,7 +13,8 @@ export function Footer() {
       <CardContent>
         <div className='flex justify-center items-center flex-col gap-4'>
           {/* Right: social links */}
-          <div className='flex flex-row gap-3 flex-1 items-end'>
+          <div className='flex items-center md:justify-end flex-col md:flex-row gap-3
+            flex-1'>
             {SocialLinks.map((link, index) => (
               <Button
                 key={index}
@@ -41,15 +43,17 @@ export function Footer() {
           </div>
           {/* Left: copyright, built by, photo credit */}
           <div className='flex flex-col gap-3 flex-1'>
-            <p className='text-sm text-muted-foreground'>
+            <Text variant='muted' size='sm'>
               &copy; est. 2023-{new Date().getFullYear()} KDT (&quot;KPop Dance
               Team&quot;)
-            </p>
+            </Text>
             <div
               className='flex items-center justify-center gap-2 text-sm
                 text-muted-foreground'
             >
-              <p>built by</p>
+              <Text variant='muted' size='sm'>
+                built by
+              </Text>
               <a href='https://web8th.com' target='_blank' rel='noreferrer'>
                 <Image
                   src='/8th_svg.svg'
@@ -70,7 +74,7 @@ export function Footer() {
                 />
               </a>
             </div>
-            <p className='text-sm text-muted-foreground'>
+            <Text variant='muted' size='sm'>
               All photos provided by{' '}
               <a
                 className='underline hover:opacity-70 transition-opacity'
@@ -81,7 +85,7 @@ export function Footer() {
                 Tseng Photography
               </a>
               .
-            </p>
+            </Text>
           </div>
         </div>
       </CardContent>

@@ -21,6 +21,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Loader2 } from 'lucide-react';
+import { Text } from '@/components/Text';
 import {
   Button,
   Dialog,
@@ -64,12 +65,12 @@ function SortableItem({ link }: { link: Link }) {
         <GripVertical className='text-muted-foreground h-5 w-5' />
       </div>
       <div className='min-w-0 flex-1'>
-        <p className='truncate text-sm font-medium'>
+        <Text variant='default' size='sm' className='truncate font-medium'>
           {link.label.length > 35 ? `${link.label.substring(0, 35)}...` : link.label}
-        </p>
-        <p className='text-muted-foreground truncate text-xs'>
+        </Text>
+        <Text variant='muted' size='xs' className='truncate'>
           {link.link.length > 35 ? `${link.link.substring(0, 35)}...` : link.link}
-        </p>
+        </Text>
       </div>
     </div>
   );
@@ -152,10 +153,10 @@ export function Reorder({
         </DialogHeader>
         <ScrollArea type='always' className='max-h-[50vh] pr-4 sm:max-h-[70vh]'>
           <div className='space-y-4 px-2'>
-            <p className='text-muted-foreground text-sm'>
+            <Text variant='muted' size='sm'>
               Drag and drop the links below to reorder them. Click &quot;Save Order&quot;
               when done.
-            </p>
+            </Text>
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}

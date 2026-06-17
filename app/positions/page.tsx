@@ -18,6 +18,7 @@ import * as PositionsActions from '@/components/PositionsActions';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { getDelayClass } from '@/utils';
+import { Text } from '@/components/Text';
 
 const fallbackPositions: Position[] = [
   {
@@ -121,21 +122,22 @@ export default function Positions() {
           className='relative flex h-full flex-col items-center justify-center space-y-4
             p-4 text-white'
         >
-          <div>
-            <h1
-              className='text-lightblue-100 fade-in-from-bottom my-5 text-center text-3xl
-                font-bold delay-75 lg:text-4xl'
+          <div className='flex flex-col justify-center max-w-screen-sm'>
+            <Text
+              variant='hd-xxl'
+              className='text-lightblue-100 fade-in-from-bottom my-5 text-center delay-75'
             >
               Find out what position fits you!
-            </h1>
-            <p
-              className='lg:paragraph fade-in-from-bottom max-w-screen-sm text-center
-                text-xl delay-150'
+            </Text>
+            <Text
+              variant='default'
+              size='xl'
+              className='fade-in-from-bottom text-center delay-150'
             >
               We have a variety of positions available for you to join! Whether
               you&apos;re interested in dancing, videography, or graphic design, we have a
               spot for you.
-            </p>
+            </Text>
           </div>
           <div className='fade-in-from-bottom delay-300'>
             <Button
@@ -161,16 +163,17 @@ export default function Positions() {
         <div className='container mx-auto rounded-2xl px-4 py-10'>
           {/* Section header */}
           <div className='fade-in-from-bottom mb-10 text-center'>
-            <p
-              className='mb-1 text-xs font-semibold uppercase tracking-[0.2em]
-                text-muted-foreground'
+            <Text
+              variant='caption'
+              size='xs'
+              className='mb-1 font-semibold uppercase tracking-[0.2em]'
             >
               Join the Team
-            </p>
-            <h2 className='text-3xl font-bold md:text-5xl'>Positions</h2>
-            <p className='mt-3 text-muted-foreground'>
+            </Text>
+            <Text variant='hd-xl'>Positions</Text>
+            <Text variant='muted' className='mt-3'>
               Explore the various positions available to join within our club!
-            </p>
+            </Text>
           </div>
 
           {/* Admin — add button */}
@@ -269,18 +272,20 @@ export default function Positions() {
                       className={`text-xl
                         ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
                     >
-                      {position.label}
+                      <Text variant='hd-sm'>{position.label}</Text>
                     </CardTitle>
                   </CardHeader>
 
                   {position.description && (
                     <CardContent>
-                      <p
-                        className={`text-sm leading-relaxed text-muted-foreground
+                      <Text
+                        variant='muted'
+                        size='sm'
+                        className={`leading-relaxed
                           ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
                       >
                         {position.description}
-                      </p>
+                      </Text>
                     </CardContent>
                   )}
 
