@@ -1,10 +1,10 @@
 # Full Next.js port over from Vite with Vanilla React
 
-# Visit the website [here](https://kdtsuo.vercel.app)
+## Visit the [website](https://kdtsuo.vercel.app)
 
 ## How to run
 
-1. Clone the repository
+1. Clone the repository with `git clone https://github.com/kdtsuo/v4`
 2. Install dependencies with `npm install`
 3. Create a `.env` file in the root directory and add the following environment variables:
 

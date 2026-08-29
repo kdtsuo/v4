@@ -1,112 +1,91 @@
 'use client';
-import { useTheme } from 'next-themes';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui';
+import { Card, CardContent } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { getDelayClass } from '@/utils';
 import { SocialLinks } from '@/lib/data';
 import Image from 'next/image';
-
-const VERSION = '4.0';
+import { ChevronRight } from 'lucide-react';
+import { Text } from '@/components/Text';
 
 export function Footer() {
-  const getYear = () => {
-    const date = new Date();
-    return date.getFullYear();
-  };
-  const { theme } = useTheme();
   return (
-    <Card
-      className='rounded-none border-none py-10 text-left drop-shadow-lg fade-in'
-      style={{
-        background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
-      }}
-    >
+    <Card className='rounded-none py-10 text-left drop-shadow-lg fade-in border'>
       <CardContent>
-        <div
-          className='flex flex-col lg:flex-row w-full items-center lg:justify-between
-            gap-8'
-        >
-          {/* Left: Text Section */}
-          <div className='w-full sm:w-1/2 flex justify-center lg:justify-start'>
-            <CardHeader>
-              <CardTitle>
-                v{VERSION} &copy; est. 2023-{getYear()} KDT (&quot;KPop Dance Team&quot;)
-              </CardTitle>
-              <CardDescription className='text-lg'>
-                <div className='flex items-center space-x-2 text-sm my-2'>
-                  <p>Made with ❤️ by</p>
-                  <span>
-                    <a href='https://rinm.dev' target='_blank' rel='noreferrer'>
-                      <Image
-                        src='/assets/img/rmlogo.png'
-                        alt='rmlogo'
-                        width={64}
-                        height={32}
-                        className='mx-1 h-auto w-16 invert-0 not-dark:invert-100'
-                        priority
-                      />
-                    </a>
-                  </span>
-                </div>
-                <div className='text-sm'>
-                  All photos are provided by{' '}
-                  <a
-                    className='underline'
-                    href='https://www.tsengphoto.ca/'
-                    target='_blank'
-                  >
-                    Tseng Photography
-                  </a>
-                  .
-                </div>
-              </CardDescription>
-            </CardHeader>
-          </div>
-
-          {/* Right: Social Links Section - Vertical Layout on Desktop */}
-          <div
-            className='w-full sm:w-1/2 flex justify-center lg:justify-end flex-row
-              items-center gap-2 flex-wrap'
-          >
+        <div className='flex justify-center items-center flex-col gap-4'>
+          {/* Right: social links */}
+          <div className='flex items-center md:justify-end flex-col md:flex-row gap-3
+            flex-1'>
             {SocialLinks.map((link, index) => (
-              <a
+              <Button
                 key={index}
-                href={link.href}
-                target='_blank'
-                rel='noopener noreferrer'
-                className={`fade-in-from-bottom ${getDelayClass(index)} w-full max-w-xs
-                flex justify-end h-12 lg:w-56`}
+                variant='link'
+                size='sm'
+                asChild
+                className={`fade-in-from-bottom ${getDelayClass(index)} px-0 justify-end`}
               >
-                <Card
-                  className='bg-secondary-foreground transition-all duration-200
-                    hover:shadow-lg h-full p-2 w-full hover:-translate-y-1'
+                <a
+                  href={link.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-1.5'
                 >
-                  <CardHeader
-                    className='flex flex-row items-center justify-between space-x-4
-                      h-full'
-                  >
-                    <Image
-                      src={link.icon}
-                      alt={link.title}
-                      width={24}
-                      height={24}
-                      className='size-6 not-dark:invert-0 dark:invert-100'
-                    />
-                    <CardTitle
-                      className='text-primary-foreground text-base font-extralight
-                        whitespace-nowrap'
-                    >
-                      {link.title}
-                    </CardTitle>
-                  </CardHeader>
-                </Card>
-              </a>
+                  <Image
+                    src={link.icon}
+                    alt={link.title}
+                    width={16}
+                    height={16}
+                    className='size-4 not-dark:invert-100 dark:invert-0'
+                  />
+                  {link.title}
+                </a>
+              </Button>
             ))}
+          </div>
+          {/* Left: copyright, built by, photo credit */}
+          <div className='flex flex-col gap-3 flex-1'>
+            <Text variant='muted' size='sm'>
+              &copy; est. 2023-{new Date().getFullYear()} KDT (&quot;KPop Dance
+              Team&quot;)
+            </Text>
+            <div
+              className='flex items-center justify-center gap-2 text-sm
+                text-muted-foreground'
+            >
+              <Text variant='muted' size='sm'>
+                built by
+              </Text>
+              <a href='https://web8th.com' target='_blank' rel='noreferrer'>
+                <Image
+                  src='/8th_svg.svg'
+                  alt='Web8th'
+                  width={48}
+                  height={48}
+                  className='not-dark:invert-100'
+                />
+              </a>
+              <ChevronRight className='text-muted-foreground size-4' />
+              <a href='https://rinm.dev' target='_blank' rel='noreferrer'>
+                <Image
+                  src='/assets/img/rmlogo.png'
+                  alt='rmlogo'
+                  width={48}
+                  height={48}
+                  className='not-dark:invert-100'
+                />
+              </a>
+            </div>
+            <Text variant='muted' size='sm'>
+              All photos provided by{' '}
+              <a
+                className='underline hover:opacity-70 transition-opacity'
+                href='https://www.tsengphoto.ca/'
+                target='_blank'
+                rel='noreferrer'
+              >
+                Tseng Photography
+              </a>
+              .
+            </Text>
           </div>
         </div>
       </CardContent>

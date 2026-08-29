@@ -248,7 +248,7 @@ export function Navbar() {
       className='fixed top-0 left-1/2 z-50 mt-4 w-11/12 max-w-7xl -translate-x-1/2 t500e
         md:mt-7'
     >
-      <div className='bg-background/50 w-full rounded-full border shadow-sm
+      <div className='bg-background/20 w-full rounded-full border shadow-sm 
         backdrop-blur-sm'>
         <div className='flex w-full items-center justify-between px-2 py-4 lg:px-4'>
           {/* Logo */}

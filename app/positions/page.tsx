@@ -4,12 +4,11 @@ import Image from 'next/image';
 import { useAuth, useToast } from '@/hooks';
 import { supabase } from '@/lib';
 import type { Position } from '@/types';
-import { ArrowDown, Clipboard, Edit, ExternalLink, Plus, Trash2, X } from 'lucide-react';
+import { ArrowDown, Clipboard, Edit, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import {
   Button,
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,6 +17,8 @@ import {
 import * as PositionsActions from '@/components/PositionsActions';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
+import { getDelayClass } from '@/utils';
+import { Text } from '@/components/Text';
 
 const fallbackPositions: Position[] = [
   {
@@ -108,7 +109,7 @@ export default function Positions() {
 
   return (
     <div className='animate-fade-in overflow-x-hidden'>
-      {/* Hero Section */}
+      {/* Hero — keep as-is */}
       <div className='relative h-screen w-screen'>
         <Image
           className='object-cover brightness-[0.25]'
@@ -117,36 +118,33 @@ export default function Positions() {
           fill
           priority
         />
-
         <div
           className='relative flex h-full flex-col items-center justify-center space-y-4
             p-4 text-white'
         >
-          <div>
-            <h1
-              className='text-lightblue-100 fade-in-from-bottom my-5 text-center text-3xl
-                font-bold delay-75 lg:text-4xl'
+          <div className='flex flex-col justify-center max-w-screen-sm'>
+            <Text
+              variant='hd-xxl'
+              className='text-lightblue-100 fade-in-from-bottom my-5 text-center delay-75'
             >
               Find out what position fits you!
-            </h1>
-            <p
-              className='lg:paragraph fade-in-from-bottom max-w-screen-sm text-center
-                text-xl delay-150'
+            </Text>
+            <Text
+              variant='default'
+              size='xl'
+              className='fade-in-from-bottom text-center delay-150'
             >
               We have a variety of positions available for you to join! Whether
               you&apos;re interested in dancing, videography, or graphic design, we have a
               spot for you.
-            </p>
+            </Text>
           </div>
-          {/* Check out positions button that scrolls to  */}
           <div className='fade-in-from-bottom delay-300'>
             <Button
               variant='default'
               onClick={() => {
                 const section = document.getElementById('positions-section');
-                if (section) {
-                  section.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (section) section.scrollIntoView({ behavior: 'smooth' });
               }}
             >
               Explore Positions <ArrowDown />
@@ -154,125 +152,144 @@ export default function Positions() {
           </div>
         </div>
       </div>
-      <div id='positions-section'></div>
 
-      <Card
-        className='lg:mx-10 mx-4 my-12'
+      <div id='positions-section' />
+
+      <section
         style={{
           background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
         }}
       >
-        <CardHeader>
-          <CardTitle className='text-4xl text-center font-bold'>Positions</CardTitle>
-          <CardDescription className='text-xl text-center'>
-            Explore the various positions available to join within our club!
-          </CardDescription>
-        </CardHeader>
-        {/* Positions Cards Section */}
-        {isLoading ? (
-          <div className='container mx-auto px-4 py-16'>
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {[...Array(6)].map((_, index) => (
-                <Card key={index} className='fade-in-from-bottom'>
-                  <CardHeader>
-                    <Skeleton className='h-7 w-3/4 mb-2' />
+        <div className='container mx-auto rounded-2xl px-4 py-10'>
+          {/* Section header */}
+          <div className='fade-in-from-bottom mb-10 text-center'>
+            <Text
+              variant='caption'
+              size='xs'
+              className='mb-1 font-semibold uppercase tracking-[0.2em]'
+            >
+              Join the Team
+            </Text>
+            <Text variant='hd-xl'>Positions</Text>
+            <Text variant='muted' className='mt-3'>
+              Explore the various positions available to join within our club!
+            </Text>
+          </div>
+
+          {/* Admin — add button */}
+          {user && (
+            <div className='fade-in-from-bottom mb-6 flex justify-center'>
+              <PositionsActions.AddEdit
+                onPositionSaved={fetchPositionFromDatabase}
+                trigger={
+                  <Button variant='default'>
+                    <Plus className='h-4 w-4' /> Add Position
+                  </Button>
+                }
+              />
+            </div>
+          )}
+
+          {/* Grid */}
+          {isLoading ? (
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className='fade-in-from-bottom rounded-2xl'>
+                  <div className='p-6 space-y-3'>
+                    <Skeleton className='h-5 w-24 rounded-full' />
+                    <Skeleton className='h-7 w-3/4' />
                     <Skeleton className='h-4 w-full' />
-                  </CardHeader>
-                  <CardFooter className='flex gap-2'>
+                    <Skeleton className='h-4 w-5/6' />
+                  </div>
+                  <CardFooter className='flex gap-2 border-t p-4'>
                     <Skeleton className='h-10 flex-1' />
                     <Skeleton className='h-10 flex-1' />
                   </CardFooter>
                 </Card>
               ))}
             </div>
-          </div>
-        ) : (
-          <CardContent className='space-y-4'>
-            {/* Add Position Button - Admin Only */}
-            {user && (
-              <div className='fade-in-from-bottom flex justify-center gap-2 flex-wrap'>
-                <PositionsActions.AddEdit
-                  onPositionSaved={fetchPositionFromDatabase}
-                  trigger={
-                    <Button variant='default'>
-                      <Plus className='h-4 w-4' /> Add Position
-                    </Button>
-                  }
-                />
-              </div>
-            )}
-
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          ) : (
+            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
               {positionsData.map((position, index) => (
                 <Card
-                  key={index}
-                  className='fade-in-from-bottom justify-between relative'
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  key={position.id}
+                  className={`fade-in-from-bottom ${getDelayClass(index)} flex flex-col
+                    gap-2 justify-between`}
                 >
-                  {/* Admin buttons */}
-                  {user && (
-                    <div className='absolute top-2 right-2 z-10 flex gap-2'>
-                      <PositionsActions.AddEdit
-                        position={position}
-                        onPositionSaved={fetchPositionFromDatabase}
-                        trigger={
-                          <Button
-                            className='h-8 w-8 p-0'
-                            variant='secondary'
-                            size='sm'
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Edit className='h-4 w-4' />
-                          </Button>
-                        }
-                      />
-                      <PositionsActions.Delete
-                        position={position}
-                        onPositionDeleted={fetchPositionFromDatabase}
-                        trigger={
-                          <Button
-                            className='h-8 w-8 p-0'
-                            variant='destructive'
-                            size='sm'
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </Button>
-                        }
-                      />
-                    </div>
-                  )}
-                  <CardHeader>
-                    <div className='flex items-start justify-between'>
-                      <CardTitle
-                        className={`text-xl
-                          ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
+                  <CardHeader className='gap-3'>
+                    {/* Status + admin controls row */}
+                    <div className='flex items-center justify-between'>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5
+                          py-1 text-xs font-semibold ${
+                            position.is_accepting_responses
+                              ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                              : 'bg-red-500/10 text-red-500 dark:text-red-400'
+                          }`}
                       >
-                        {position.label}
-                      </CardTitle>
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full
+                            ${position.is_accepting_responses ? 'bg-green-500' : 'bg-red-500'}`}
+                        />
+                        {position.is_accepting_responses
+                          ? 'Accepting Applications'
+                          : 'Closed'}
+                      </span>
+
+                      {user && (
+                        <div className='flex gap-1.5'>
+                          <PositionsActions.AddEdit
+                            position={position}
+                            onPositionSaved={fetchPositionFromDatabase}
+                            trigger={
+                              <Button
+                                variant='secondary'
+                                size='icon'
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Edit />
+                              </Button>
+                            }
+                          />
+                          <PositionsActions.Delete
+                            position={position}
+                            onPositionDeleted={fetchPositionFromDatabase}
+                            trigger={
+                              <Button
+                                variant='destructive'
+                                size='icon'
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Trash2 />
+                              </Button>
+                            }
+                          />
+                        </div>
+                      )}
                     </div>
-                    {position.description && (
-                      <CardDescription
-                        className={`text-base
+
+                    <CardTitle
+                      className={`text-xl
+                        ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
+                    >
+                      <Text variant='hd-sm'>{position.label}</Text>
+                    </CardTitle>
+                  </CardHeader>
+
+                  {position.description && (
+                    <CardContent>
+                      <Text
+                        variant='muted'
+                        size='sm'
+                        className={`leading-relaxed
                           ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
                       >
                         {position.description}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
+                      </Text>
+                    </CardContent>
+                  )}
 
-                  <CardContent className='flex gap-2'>
-                    {!position.is_accepting_responses && (
-                      <>
-                        <X className='h-5 w-5 text-red-500 shrink-0' />
-                        <div className='text-sm text-red-500 font-medium'>
-                          Not accepting applications currently
-                        </div>
-                      </>
-                    )}
-                  </CardContent>
-
-                  <CardFooter className='flex gap-2 flex-wrap'>
+                  <CardFooter className='flex gap-2 border-t pt-4'>
                     <Button
                       variant='secondary'
                       className='flex-1'
@@ -285,12 +302,12 @@ export default function Positions() {
                       variant='default'
                       className='flex-1'
                       disabled={!position.is_accepting_responses && !user}
+                      asChild
                     >
                       <Link
                         href={position.form_url}
                         target='_blank'
                         rel='noopener noreferrer'
-                        className='flex items-center justify-center gap-2'
                       >
                         <ExternalLink className='h-4 w-4' /> Go to Form
                       </Link>
@@ -299,9 +316,9 @@ export default function Positions() {
                 </Card>
               ))}
             </div>
-          </CardContent>
-        )}
-      </Card>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
