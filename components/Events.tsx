@@ -85,7 +85,7 @@ function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
   }, [open, event.id]);
 
   return (
-    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[85vh]'>
+    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[60vh] sm:max-h-[85vh] '>
       {/* Visually hidden title for accessibility — Radix requires a DialogTitle */}
       <DialogTitle className='sr-only'>{event.title}</DialogTitle>
 
@@ -102,7 +102,7 @@ function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
             />
             <div className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent' />
             <Badge
-              className={`absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
+              className={`border border-white absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
                 ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
             >
               <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
@@ -302,7 +302,7 @@ function EventsSection({
 
   return (
     <div className='mb-12 last:mb-0'>
-      <div className='relative mb-4 flex items-center justify-center'>
+      <div className='mb-2 flex flex-col items-center gap-4 justify-center'>
         <Text variant='caption' size='xs' className='font-semibold uppercase tracking-[0.2em]'>
           {title}
         </Text>
@@ -311,7 +311,6 @@ function EventsSection({
           <Button
             type='button'
             onClick={() => setExpanded((e) => !e)}
-            className='absolute right-0 flex items-center gap-1 '
           >
             <Text as='span' variant='label' size='xs' className='font-semibold uppercase tracking-wide'>
               {expanded ? 'Show less' : 'Show more'}
@@ -365,7 +364,7 @@ export function Events() {
   return (
     <section className='container mx-auto px-4 mb-4 mt-10'>
       <Card className='p-4'>
-        <div className='fade-in-from-bottom mb-6 text-center'>
+        <div className='fade-in-from-bottom text-center'>
           <Text variant='caption' size='xs' className='mb-1 font-semibold uppercase tracking-[0.2em]'>
             Happening
           </Text>
@@ -389,7 +388,6 @@ export function Events() {
             <EventsSection
               title='Upcoming Events'
               events={upcomingEvents}
-              emptyMessage='No upcoming events.'
             />
             <EventsSection title='Past Events' events={pastEvents} />
           </>

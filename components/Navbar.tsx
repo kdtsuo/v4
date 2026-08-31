@@ -184,7 +184,7 @@ function LogoutDialog() {
           )}
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-[300px]'>
+      <DialogContent className='max-w-75'>
         <DialogHeader>
           <DialogTitle>Logout</DialogTitle>
           <DialogDescription>
