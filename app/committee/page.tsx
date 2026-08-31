@@ -39,6 +39,35 @@ function getInitials(fullName: string) {
   return names.length >= 2 ? `${names[0][0]}${names[1][0]}` : names[0][0];
 }
 
+function useInstagramBio(member: TeamMember) {
+  const [bio, setBio] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only fetch a fallback bio if there's no manually set bio and an Instagram link exists
+    if (member.bio || !member.instagram_url) return;
+
+    const username = extractInstagramUsername(member.instagram_url);
+    if (!username) return;
+
+    let cancelled = false;
+
+    fetch(`/api/instagram-profile?username=${encodeURIComponent(username)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data.bio) setBio(data.bio);
+      })
+      .catch(() => {
+        // Silently fall through — no bio shown, this is a best-effort enhancement
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [member.bio, member.instagram_url]);
+
+  return bio;
+}
+
 function MemberAvatar({ member }: { member: TeamMember }) {
   const fallbackUsername =
     !member.profile_image_url && member.instagram_url
@@ -159,62 +188,94 @@ export default function Committee() {
           ) : (
             <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
               {sortedMembers.map((member, index) => (
-                <Card
+                <MemberCard
                   key={member.id}
-                  className={`fade-in-from-bottom ${getDelayClass(index)} relative`}
-                >
-                  {user && (
-                    <div className='absolute right-2 top-2 z-10 flex gap-1.5'>
-                      <CommitteeAction.AddEditMemberDialog
-                        mode='edit'
-                        member={member}
-                        onMemberSaved={fetchTeamMembers}
-                        trigger={
-                          <Button
-                            className='size-8 p-0'
-                            variant='secondary'
-                            size='sm'
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Edit />
-                          </Button>
-                        }
-                      />
-                      <CommitteeAction.DeleteMemberDialog
-                        member={member}
-                        onMemberDeleted={fetchTeamMembers}
-                      />
-                    </div>
-                  )}
-
-                  <CardContent className='flex flex-col items-center gap-3 p-6 text-center'>
-                    <MemberAvatar member={member} />
-
-                    <div className='flex min-w-0 flex-col items-center gap-1'>
-                      <Text variant='hd-lg' className='leading-tight'>
-                        {member.full_name}
-                      </Text>
-
-                      <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
-                        {member.role}
-                      </Badge>
-
-                      {member.bio && (
-                        <Text variant='muted' size='sm' className='mt-1 leading-relaxed'>
-                          {member.bio}
-                        </Text>
-                      )}
-
-                      <MemberSocialLinks member={member} />
-                    </div>
-                  </CardContent>
-                </Card>
+                  member={member}
+                  index={index}
+                  isAdmin={!!user}
+                  onMemberSaved={fetchTeamMembers}
+                  onMemberDeleted={fetchTeamMembers}
+                />
               ))}
             </div>
           )}
         </div>
       </section>
     </div>
+  );
+}
+
+function MemberCard({
+  member,
+  index,
+  isAdmin,
+  onMemberSaved,
+  onMemberDeleted,
+}: {
+  member: TeamMember;
+  index: number;
+  isAdmin: boolean;
+  onMemberSaved: () => void;
+  onMemberDeleted: () => void;
+}) {
+  const instagramBio = useInstagramBio(member);
+  const displayBio = member.bio || instagramBio;
+
+  return (
+    <Card
+      key={member.id}
+      className={`fade-in-from-bottom ${getDelayClass(index)} relative`}
+    >
+      {isAdmin && (
+        <div className='absolute right-2 top-2 z-10 flex gap-1.5'>
+          <CommitteeAction.AddEditMemberDialog
+            mode='edit'
+            member={member}
+            onMemberSaved={onMemberSaved}
+            trigger={
+              <Button
+                className='size-8 p-0'
+                variant='secondary'
+                size='sm'
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Edit />
+              </Button>
+            }
+          />
+          <CommitteeAction.DeleteMemberDialog
+            member={member}
+            onMemberDeleted={onMemberDeleted}
+          />
+        </div>
+      )}
+
+      <CardContent className='flex flex-col items-center gap-3 p-6 text-center'>
+        <MemberAvatar member={member} />
+
+        <div className='flex min-w-0 flex-col items-center gap-1'>
+          <Text variant='hd-lg' className='leading-tight'>
+            {member.full_name}
+          </Text>
+
+          <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
+            {member.role}
+          </Badge>
+
+          {displayBio && (
+            <Text
+              variant='muted'
+              size='sm'
+              className='mt-1 leading-relaxed whitespace-pre-line'
+            >
+              {displayBio}
+            </Text>
+          )}
+
+          <MemberSocialLinks member={member} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -229,7 +290,7 @@ function getBadgeVariant(role: string) {
 
 function MemberSocialLinks({ member }: { member: TeamMember }) {
   return (
-    <div className='flex shrink-0 gap-1'>
+    <div className='mt-1 flex shrink-0 gap-1'>
       {member.instagram_url && (
         <a href={member.instagram_url} target='_blank' rel='noopener noreferrer'>
           <Button size='icon' variant='outline' className='rounded-full'>

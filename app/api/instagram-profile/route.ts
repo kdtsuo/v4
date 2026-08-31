@@ -1,11 +1,9 @@
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const username = searchParams.get('username');
-
   if (!username) {
     return Response.json({ error: 'Missing username' }, { status: 400 });
   }
-
   try {
     const apiRes = await fetch(
       `https://i.instagram.com/api/v1/users/web_profile_info/?username=${encodeURIComponent(username)}`,
@@ -20,21 +18,24 @@ export async function GET(request: Request) {
           'Sec-Fetch-Mode': 'cors',
           'Sec-Fetch-Dest': 'empty',
         },
-        next: { revalidate: 3600 },
+        cache: 'no-store', // bypass caching while debugging
       }
     );
+
+    const rawText = await apiRes.text();
+    console.log('IG status:', apiRes.status);
+    console.log('IG raw body (first 500 chars):', rawText.slice(0, 500));
 
     if (!apiRes.ok) {
       return Response.json({ error: 'Profile not found' }, { status: 404 });
     }
 
-    const data = await apiRes.json();
+    const data = JSON.parse(rawText);
     const bio = data?.data?.user?.biography ?? null;
-
     if (!bio) {
+      console.log('Parsed but no bio field. Full user object:', data?.data?.user);
       return Response.json({ error: 'Bio not found' }, { status: 404 });
     }
-
     return Response.json({ bio });
   } catch (err) {
     console.error('Error fetching Instagram bio:', err);
