@@ -27,8 +27,6 @@ export async function GET(request: Request) {
     console.log('IG raw body (first 500 chars):', rawText.slice(0, 500));
 
     if (!apiRes.ok) {
-      const text = await apiRes.text();
-      console.error('IG fetch failed:', apiRes.status, text.slice(0, 300));
       return Response.json({ error: 'Profile not found' }, { status: 404 });
     }
 
