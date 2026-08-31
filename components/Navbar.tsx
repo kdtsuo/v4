@@ -206,7 +206,7 @@ function LogoutDialog() {
 export function Navbar() {
   const { user } = useAuth();
   const pathname = usePathname();
-  const items = ['Home', 'About', 'Positions', 'Contacts', 'Sponsors'];
+  const items = ['Home', 'About', 'Positions', 'Committee', 'Sponsors'];
   const [open, setOpen] = useState(false);
 
   const authSection = user ? (
