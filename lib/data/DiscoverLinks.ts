@@ -10,11 +10,11 @@ export const DiscoverLinks = [
     isOpen: true,
   },
   {
-    title: 'Contact Us',
+    title: 'Committee',
     icon: Contact,
     description: 'Get in touch',
     image: '/assets/img/stock/showcase.jpeg',
-    link: '/contacts',
+    link: '/committee',
     isOpen: true,
   },
   {

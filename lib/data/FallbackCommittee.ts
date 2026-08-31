@@ -2,7 +2,7 @@ import { TeamMember } from '@/types';
 
 const today = new Date().toISOString();
 
-export const FallbackContacts: TeamMember[] = [
+export const FallbackCommittee: TeamMember[] = [
   {
     id: '1',
     full_name: 'Marita Meng',

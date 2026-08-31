@@ -105,7 +105,7 @@ export interface TeamMember {
   id: string;
   full_name: string;
   role: string;
-  bio: string;
+  bio?: string | null;
   profile_image_url: string;
   instagram_url: string;
   linkedin_url: string;

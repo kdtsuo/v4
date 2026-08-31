@@ -1,24 +1,24 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'contacts ♥ kdt',
+  title: 'committee ♥ kdt',
   description: 'meet the kpop dance team members at ubco!',
   openGraph: {
     images: [
       {
-        url: '/assets/img/kdtlogobanner-contacts.webp',
+        url: '/assets/img/kdtlogobanner-committee.webp',
         width: 1200,
         height: 630,
-        alt: 'KDT Contacts',
+        alt: 'KDT Committee',
       },
     ],
   },
   twitter: {
-    images: ['/assets/img/kdtlogobanner-contacts.webp'],
+    images: ['/assets/img/kdtlogobanner-committee.webp'],
     card: 'summary_large_image',
   },
 };
 
-export default function ContactsLayout({ children }: { children: React.ReactNode }) {
+export default function CommitteeLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

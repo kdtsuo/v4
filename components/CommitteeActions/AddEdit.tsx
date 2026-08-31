@@ -37,7 +37,6 @@ const formSchema = z.object({
     .max(50, 'Role must be at most 50 characters'),
   bio: z
     .string()
-    .min(1, 'Bio is required')
     .max(200, 'Bio must be at most 200 characters'),
   profile_image_url: z.string().url('Please enter a valid image URL').or(z.literal('')),
   instagram_url: z.string().url('Please enter a valid URL').or(z.literal('')),
@@ -51,7 +50,7 @@ type AddEditMemberDialogProps = {
     id?: string;
     full_name: string;
     role: string;
-    bio: string;
+    bio?: string | null;
     profile_image_url: string;
     instagram_url: string;
     linkedin_url: string;

@@ -1,5 +1,3 @@
-import type { NextConfig } from 'next';
-
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -11,8 +9,15 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'portal.getqpay.com',
       },
+      {
+        protocol: 'https',
+        hostname: '*.cdninstagram.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.fbcdn.net',
+      },
     ],
   },
 };
-
 export default nextConfig;

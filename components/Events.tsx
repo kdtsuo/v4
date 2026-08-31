@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, MapPin, ArrowRight, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, ExternalLink, ChevronDown, ChevronUp, Star } from 'lucide-react';
 import { Text } from '@/components/Text';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -36,6 +36,19 @@ interface EventsData {
   pastEvents: Event[];
 }
 
+interface Review {
+  displayName: string;
+  rating: number;
+  review: string;
+  ratingDate: string;
+}
+
+interface ReviewsData {
+  reviews: Review[];
+  avgRating: number;
+  totalReviews: number;
+}
+
 // Matches the grid's own breakpoints: grid-cols-1 / sm:grid-cols-2 / lg:grid-cols-3
 function useGridCols() {
   const [cols, setCols] = useState(1);
@@ -53,6 +66,90 @@ function useGridCols() {
   }, []);
 
   return cols;
+}
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className='flex items-center gap-0.5'>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          size={13}
+          strokeWidth={2}
+          className={i < rating ? 'fill-amber-400 text-amber-400' : 'fill-none text-muted-foreground/40'}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ReviewsSection({ eventId, open }: { eventId: string; open: boolean }) {
+  const [data, setData] = useState<ReviewsData | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    let cancelled = false;
+    setLoading(true);
+    setData(null);
+
+    fetch(`/api/events/${eventId}/reviews`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (!cancelled) setData(json);
+      })
+      .catch(() => {
+        if (!cancelled) setData(null);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open, eventId]);
+
+  if (loading) {
+    return (
+      <div className='flex justify-center py-4 border-t'>
+        <Spinner className='size-6 text-muted' />
+      </div>
+    );
+  }
+
+  if (!data || data.totalReviews === 0) return null;
+
+  return (
+    <div className='border-t pt-3 flex flex-col gap-3'>
+      <div className='flex items-center gap-2'>
+        <StarRating rating={Math.round(data.avgRating)} />
+        <Text as='span' variant='default' size='sm' className='font-semibold'>
+          {data.avgRating.toFixed(1)}
+        </Text>
+        <Text as='span' variant='default' size='sm' className='text-muted-foreground'>
+          ({data.totalReviews} {data.totalReviews === 1 ? 'review' : 'reviews'})
+        </Text>
+      </div>
+
+      <div className='flex flex-col gap-3'>
+        {data.reviews.map((r, i) => (
+          <div key={i} className='flex flex-col gap-1'>
+            <div className='flex items-center justify-between'>
+              <Text as='span' variant='default' size='sm' className='font-semibold'>
+                {r.displayName}
+              </Text>
+              <StarRating rating={r.rating} />
+            </div>
+            <Text as='p' variant='default' size='sm' className='text-muted-foreground whitespace-pre-line'>
+              {r.review}
+            </Text>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
@@ -130,6 +227,8 @@ function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
                 </Text>
               </div>
             </div>
+
+            <ReviewsSection eventId={event.id} open={open} />
 
             <div className='border-t py-3'>
               {descLoading && (
@@ -275,8 +374,6 @@ function EventsSection({
   const cols = useGridCols();
   const [expanded, setExpanded] = useState(false);
 
-  // Collapse back to the compact view whenever the underlying event list
-  // changes (e.g. a refetch), so stale expanded state doesn't persist.
   useEffect(() => {
     setExpanded(false);
   }, [events]);

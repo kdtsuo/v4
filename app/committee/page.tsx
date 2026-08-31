@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useAuth, useToast } from '@/hooks';
-import { FallbackContacts } from '@/lib/data/';
+import { FallbackCommittee } from '@/lib/data/';
 import { supabase } from '@/lib';
 import type { TeamMember } from '@/types';
 import { Edit, Loader2 } from 'lucide-react';
@@ -15,7 +15,7 @@ import {
   Card,
   CardContent,
 } from '@/components/ui';
-import * as ContactsAction from '@/components/ContactsActions';
+import * as CommitteeAction from '@/components/CommitteeActions';
 import Image from 'next/image';
 import { getDelayClass } from '@/utils';
 import { Text } from '@/components/Text';
@@ -24,7 +24,71 @@ const instagramIcon = '/assets/img/icons/instagram.svg';
 const linkedinIcon = '/assets/img/icons/linkedin.svg';
 const githubIcon = '/assets/img/icons/github.svg';
 
-export default function Contacts() {
+function extractInstagramUsername(url: string): string | null {
+  try {
+    const path = new URL(url).pathname;
+    const segment = path.split('/').filter(Boolean)[0];
+    return segment || null;
+  } catch {
+    return null;
+  }
+}
+
+function getInitials(fullName: string) {
+  const names = fullName.split(' ');
+  return names.length >= 2 ? `${names[0][0]}${names[1][0]}` : names[0][0];
+}
+
+function useInstagramBio(member: TeamMember) {
+  const [bio, setBio] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Only fetch a fallback bio if there's no manually set bio and an Instagram link exists
+    if (member.bio || !member.instagram_url) return;
+
+    const username = extractInstagramUsername(member.instagram_url);
+    if (!username) return;
+
+    let cancelled = false;
+
+    fetch(`/api/instagram-profile?username=${encodeURIComponent(username)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data.bio) setBio(data.bio);
+      })
+      .catch(() => {
+        // Silently fall through — no bio shown, this is a best-effort enhancement
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [member.bio, member.instagram_url]);
+
+  return bio;
+}
+
+function MemberAvatar({ member }: { member: TeamMember }) {
+  const fallbackUsername =
+    !member.profile_image_url && member.instagram_url
+      ? extractInstagramUsername(member.instagram_url)
+      : null;
+
+  const src =
+    member.profile_image_url ||
+    (fallbackUsername
+      ? `/api/instagram-avatar?username=${encodeURIComponent(fallbackUsername)}`
+      : undefined);
+
+  return (
+    <Avatar className='size-32 shrink-0'>
+      <AvatarImage src={src} alt={member.full_name} />
+      <AvatarFallback>{getInitials(member.full_name)}</AvatarFallback>
+    </Avatar>
+  );
+}
+
+export default function Committee() {
   const { theme } = useTheme();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -45,11 +109,11 @@ export default function Contacts() {
       if (data && data.length > 0) {
         setTeamMembers(data);
       } else {
-        setTeamMembers(FallbackContacts);
+        setTeamMembers(FallbackCommittee);
       }
     } catch (error) {
       toast.error('Failed to load team members. Using default data.');
-      setTeamMembers(FallbackContacts);
+      setTeamMembers(FallbackCommittee);
       throw error;
     } finally {
       setIsLoading(false);
@@ -109,7 +173,7 @@ export default function Contacts() {
           {/* Admin — add member */}
           {user && (
             <div className='fade-in-from-bottom mb-6 flex justify-center'>
-              <ContactsAction.AddEditMemberDialog
+              <CommitteeAction.AddEditMemberDialog
                 mode='add'
                 onMemberSaved={fetchTeamMembers}
               />
@@ -122,78 +186,96 @@ export default function Contacts() {
               <Loader2 className='size-10 animate-spin text-muted-foreground' />
             </div>
           ) : (
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
               {sortedMembers.map((member, index) => (
-                <Card
+                <MemberCard
                   key={member.id}
-                  className={`fade-in-from-bottom ${getDelayClass(index)} relative`}
-                >
-                  {user && (
-                    <div className='absolute right-2 top-2 z-10 flex gap-1.5'>
-                      <ContactsAction.AddEditMemberDialog
-                        mode='edit'
-                        member={member}
-                        onMemberSaved={fetchTeamMembers}
-                        trigger={
-                          <Button
-                            className='size-8 p-0'
-                            variant='secondary'
-                            size='sm'
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Edit />
-                          </Button>
-                        }
-                      />
-                      <ContactsAction.DeleteMemberDialog
-                        member={member}
-                        onMemberDeleted={fetchTeamMembers}
-                      />
-                    </div>
-                  )}
-
-                  <CardContent className='flex items-start gap-4 p-5'>
-                    <Avatar className='size-16 shrink-0'>
-                      <AvatarImage
-                        src={member.profile_image_url}
-                        alt={member.full_name}
-                      />
-                      <AvatarFallback>
-                        {(() => {
-                          const names = member.full_name.split(' ');
-                          return names.length >= 2
-                            ? `${names[0][0]}${names[1][0]}`
-                            : names[0][0];
-                        })()}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    <div className='flex min-w-0 flex-1 flex-col gap-1'>
-                      <div className='flex items-start justify-between gap-2'>
-                        <Text variant='hd-lg' className='leading-tight'>
-                          {member.full_name}
-                        </Text>
-                        <MemberSocialLinks member={member} />
-                      </div>
-
-                      <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
-                        {member.role}
-                      </Badge>
-
-                      {member.bio && (
-                        <Text variant='muted' size='sm' className='mt-1 leading-relaxed'>
-                          {member.bio}
-                        </Text>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
+                  member={member}
+                  index={index}
+                  isAdmin={!!user}
+                  onMemberSaved={fetchTeamMembers}
+                  onMemberDeleted={fetchTeamMembers}
+                />
               ))}
             </div>
           )}
         </div>
       </section>
     </div>
+  );
+}
+
+function MemberCard({
+  member,
+  index,
+  isAdmin,
+  onMemberSaved,
+  onMemberDeleted,
+}: {
+  member: TeamMember;
+  index: number;
+  isAdmin: boolean;
+  onMemberSaved: () => void;
+  onMemberDeleted: () => void;
+}) {
+  const instagramBio = useInstagramBio(member);
+  const displayBio = member.bio || instagramBio;
+
+  return (
+    <Card
+      key={member.id}
+      className={`fade-in-from-bottom ${getDelayClass(index)} relative`}
+    >
+      {isAdmin && (
+        <div className='absolute right-2 top-2 z-10 flex gap-1.5'>
+          <CommitteeAction.AddEditMemberDialog
+            mode='edit'
+            member={member}
+            onMemberSaved={onMemberSaved}
+            trigger={
+              <Button
+                className='size-8 p-0'
+                variant='secondary'
+                size='sm'
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Edit />
+              </Button>
+            }
+          />
+          <CommitteeAction.DeleteMemberDialog
+            member={member}
+            onMemberDeleted={onMemberDeleted}
+          />
+        </div>
+      )}
+
+      <CardContent className='flex flex-col items-center gap-3 p-6 text-center'>
+        <MemberAvatar member={member} />
+
+        <div className='flex min-w-0 flex-col items-center gap-1'>
+          <Text variant='hd-lg' className='leading-tight'>
+            {member.full_name}
+          </Text>
+
+          <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
+            {member.role}
+          </Badge>
+
+          {displayBio && (
+            <Text
+              variant='muted'
+              size='sm'
+              className='mt-1 leading-relaxed whitespace-pre-line'
+            >
+              {displayBio}
+            </Text>
+          )}
+
+          <MemberSocialLinks member={member} />
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -208,7 +290,7 @@ function getBadgeVariant(role: string) {
 
 function MemberSocialLinks({ member }: { member: TeamMember }) {
   return (
-    <div className='flex shrink-0 gap-1'>
+    <div className='mt-1 flex shrink-0 gap-1'>
       {member.instagram_url && (
         <a href={member.instagram_url} target='_blank' rel='noopener noreferrer'>
           <Button size='icon' variant='outline' className='rounded-full'>
