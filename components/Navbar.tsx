@@ -34,7 +34,7 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   return (
     <div
       role='button'
-      className={`flex rounded-xl p-2 outline ${className}`}
+      className={`flex rounded-xl p-2 outline ${className} bg-white`}
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       <SunIcon
@@ -42,7 +42,7 @@ function ThemeToggle({ className = '' }: { className?: string }) {
           dark:-rotate-90'
       />
       <MoonIcon
-        className='absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all
+        className='absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all text-black
           dark:scale-100 dark:rotate-0'
       />
       <span className='sr-only'>Toggle theme</span>

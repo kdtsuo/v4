@@ -13,7 +13,7 @@ interface IconLinkProps {
 
 export function IconLink({ links }: IconLinkProps) {
   return (
-    <div className='mx-auto grid w-full grid-cols-2 justify-items-center gap-2'>
+    <div className='mx-auto flex flex-wrap justify-center gap-2'>
       {links.map((link, index) => (
         <a
           key={index}
@@ -23,7 +23,7 @@ export function IconLink({ links }: IconLinkProps) {
           className='nudgeup fadein80 t200e'
         >
           <Image
-            className='m-2 h-auto w-14 not-dark:invert-100 dark:invert-0'
+            className='m-2 h-auto w-6 not-dark:invert-100 dark:invert-0'
             src={link.imgSrc}
             alt={link.alt}
             width={56}
