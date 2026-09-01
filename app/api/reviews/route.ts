@@ -1,8 +1,4 @@
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
+export async function GET() {
   try {
     const res = await fetch('https://api.hellorubric.com/', {
       method: 'POST',
@@ -15,10 +11,9 @@ export async function GET(
           sortType: 'rating',
           sortDirection: 'desc',
           reviewsRequired: true,
-          desiredLevel: 'category',
+          desiredLevel: 'society',
           societyId: 7805,
-          category: 'event',
-          currentUrl: `https://campus.hellorubric.com/?eid=${id}&fromsite=true`,
+          currentUrl: 'https://campus.hellorubric.com/?fromsite=true',
           device: 'web_portal',
           version: 4,
           timestamp: Date.now(),

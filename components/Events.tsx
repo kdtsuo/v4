@@ -83,24 +83,26 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function ReviewsSection({ eventId, open }: { eventId: string; open: boolean }) {
+function ReviewsSection() {
   const [data, setData] = useState<ReviewsData | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
-
     let cancelled = false;
-    setLoading(true);
-    setData(null);
 
-    fetch(`/api/events/${eventId}/reviews`)
+    fetch('/api/reviews')
       .then((res) => res.json())
       .then((json) => {
-        if (!cancelled) setData(json);
+        if (cancelled) return;
+        if (json.error) {
+          setError(true);
+        } else {
+          setData(json);
+        }
       })
       .catch(() => {
-        if (!cancelled) setData(null);
+        if (!cancelled) setError(true);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -109,21 +111,30 @@ function ReviewsSection({ eventId, open }: { eventId: string; open: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [open, eventId]);
+  }, []);
 
   if (loading) {
     return (
-      <div className='flex justify-center py-4 border-t'>
-        <Spinner className='size-6 text-muted' />
+      <div className='mb-12 last:mb-0'>
+        <Text variant='caption' size='xs' className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'>
+          Reviews
+        </Text>
+        <div className='flex justify-center py-8'>
+          <Spinner className='size-8 text-muted' />
+        </div>
       </div>
     );
   }
 
-  if (!data || data.totalReviews === 0) return null;
+  if (error || !data || data.totalReviews === 0) return null;
 
   return (
-    <div className='border-t pt-3 flex flex-col gap-3'>
-      <div className='flex items-center gap-2'>
+    <div className='mb-12 last:mb-0'>
+      <Text variant='caption' size='xs' className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'>
+        Reviews
+      </Text>
+
+      <div className='flex items-center justify-center gap-2 mb-4'>
         <StarRating rating={Math.round(data.avgRating)} />
         <Text as='span' variant='default' size='sm' className='font-semibold'>
           {data.avgRating.toFixed(1)}
@@ -133,19 +144,21 @@ function ReviewsSection({ eventId, open }: { eventId: string; open: boolean }) {
         </Text>
       </div>
 
-      <div className='flex flex-col gap-3'>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {data.reviews.map((r, i) => (
-          <div key={i} className='flex flex-col gap-1'>
-            <div className='flex items-center justify-between'>
-              <Text as='span' variant='default' size='sm' className='font-semibold'>
-                {r.displayName}
+          <Card key={i} className='p-4'>
+            <div className='flex flex-col gap-1'>
+              <div className='flex items-center justify-between'>
+                <Text as='span' variant='default' size='sm' className='font-semibold'>
+                  {r.displayName}
+                </Text>
+                <StarRating rating={r.rating} />
+              </div>
+              <Text as='p' variant='default' size='sm' className='text-muted-foreground whitespace-pre-line'>
+                {r.review}
               </Text>
-              <StarRating rating={r.rating} />
             </div>
-            <Text as='p' variant='default' size='sm' className='text-muted-foreground whitespace-pre-line'>
-              {r.review}
-            </Text>
-          </div>
+          </Card>
         ))}
       </div>
     </div>
@@ -227,8 +240,6 @@ function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
                 </Text>
               </div>
             </div>
-
-            <ReviewsSection eventId={event.id} open={open} />
 
             <div className='border-t py-3'>
               {descLoading && (
@@ -487,6 +498,7 @@ export function Events() {
               events={upcomingEvents}
             />
             <EventsSection title='Past Events' events={pastEvents} />
+            <ReviewsSection />
           </>
         )}
       </Card>
