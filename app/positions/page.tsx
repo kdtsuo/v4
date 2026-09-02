@@ -68,8 +68,19 @@ const fallbackPositions: Position[] = [
   },
 ];
 
+function sortPositions(positions: Position[]): Position[] {
+  return [...positions].sort((a, b) => {
+    if (a.is_accepting_responses !== b.is_accepting_responses) {
+      return Number(b.is_accepting_responses) - Number(a.is_accepting_responses);
+    }
+    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+  });
+}
+
 export default function Positions() {
-  const [positionsData, setPositionsData] = useState<Position[]>(fallbackPositions);
+  const [positionsData, setPositionsData] = useState<Position[]>(
+    sortPositions(fallbackPositions),
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -89,9 +100,9 @@ export default function Positions() {
       }
 
       const positions = data && data.length > 0 ? data : fallbackPositions;
-      setPositionsData(positions);
+      setPositionsData(sortPositions(positions));
     } catch (error) {
-      setPositionsData(fallbackPositions);
+      setPositionsData(sortPositions(fallbackPositions));
       throw error;
     } finally {
       setIsLoading(false);
@@ -109,7 +120,6 @@ export default function Positions() {
 
   return (
     <div className='animate-fade-in overflow-x-hidden'>
-      {/* Hero — keep as-is */}
       <div className='relative h-screen w-screen'>
         <Image
           className='object-cover brightness-[0.25]'
@@ -159,165 +169,165 @@ export default function Positions() {
         style={{
           background: `var(--bg-xless-dotted-${theme === 'dark' ? 'dark' : 'light'})`,
         }}
+        className='py-16'
       >
-        <div className='container mx-auto rounded-2xl px-4 py-10'>
-          {/* Section header */}
-          <div className='fade-in-from-bottom mb-10 text-center'>
-            <Text
-              variant='caption'
-              size='xs'
-              className='mb-1 font-semibold uppercase tracking-[0.2em]'
-            >
-              Join the Team
-            </Text>
-            <Text variant='hd-xl'>Positions</Text>
-            <Text variant='muted' className='mt-3'>
-              Explore the various positions available to join within our club!
-            </Text>
-          </div>
-
-          {/* Admin — add button */}
-          {user && (
-            <div className='fade-in-from-bottom mb-6 flex justify-center'>
-              <PositionsActions.AddEdit
-                onPositionSaved={fetchPositionFromDatabase}
-                trigger={
-                  <Button variant='default'>
-                    <Plus className='h-4 w-4' /> Add Position
-                  </Button>
-                }
-              />
+          <Card className='container mx-auto p-8'>
+            <div className='fade-in-from-bottom mb-10 text-center'>
+              <Text
+                variant='caption'
+                size='xs'
+                className='mb-1 font-semibold uppercase tracking-[0.2em]'
+              >
+                Join the Team
+              </Text>
+              <Text variant='hd-xl'>Positions</Text>
+              <Text variant='muted' className='mt-3'>
+                Explore the various positions available to join within our club!
+              </Text>
             </div>
-          )}
 
-          {/* Grid */}
-          {isLoading ? (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className='fade-in-from-bottom rounded-2xl'>
-                  <div className='p-6 space-y-3'>
-                    <Skeleton className='h-5 w-24 rounded-full' />
-                    <Skeleton className='h-7 w-3/4' />
-                    <Skeleton className='h-4 w-full' />
-                    <Skeleton className='h-4 w-5/6' />
-                  </div>
-                  <CardFooter className='flex gap-2 border-t p-4'>
-                    <Skeleton className='h-10 flex-1' />
-                    <Skeleton className='h-10 flex-1' />
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-              {positionsData.map((position, index) => (
-                <Card
-                  key={position.id}
-                  className={`fade-in-from-bottom ${getDelayClass(index)} flex flex-col
-                    gap-2 justify-between`}
-                >
-                  <CardHeader className='gap-3'>
-                    {/* Status + admin controls row */}
-                    <div className='flex items-center justify-between'>
-                      <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5
-                          py-1 text-xs font-semibold ${
-                            position.is_accepting_responses
-                              ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                              : 'bg-red-500/10 text-red-500 dark:text-red-400'
-                          }`}
-                      >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full
-                            ${position.is_accepting_responses ? 'bg-green-500' : 'bg-red-500'}`}
-                        />
-                        {position.is_accepting_responses
-                          ? 'Accepting Applications'
-                          : 'Closed'}
-                      </span>
+            {/* Admin — add button */}
+            {user && (
+              <div className='fade-in-from-bottom mb-6 flex justify-center'>
+                <PositionsActions.AddEdit
+                  onPositionSaved={fetchPositionFromDatabase}
+                  trigger={
+                    <Button variant='default'>
+                      <Plus className='h-4 w-4' /> Add Position
+                    </Button>
+                  }
+                />
+              </div>
+            )}
 
-                      {user && (
-                        <div className='flex gap-1.5'>
-                          <PositionsActions.AddEdit
-                            position={position}
-                            onPositionSaved={fetchPositionFromDatabase}
-                            trigger={
-                              <Button
-                                variant='secondary'
-                                size='icon'
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Edit />
-                              </Button>
-                            }
-                          />
-                          <PositionsActions.Delete
-                            position={position}
-                            onPositionDeleted={fetchPositionFromDatabase}
-                            trigger={
-                              <Button
-                                variant='destructive'
-                                size='icon'
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Trash2 />
-                              </Button>
-                            }
-                          />
-                        </div>
-                      )}
+            {/* Grid */}
+            {isLoading ? (
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i} className='fade-in-from-bottom rounded-2xl'>
+                    <div className='p-6 space-y-3'>
+                      <Skeleton className='h-5 w-24 rounded-full' />
+                      <Skeleton className='h-7 w-3/4' />
+                      <Skeleton className='h-4 w-full' />
+                      <Skeleton className='h-4 w-5/6' />
                     </div>
+                    <CardFooter className='flex gap-2 border-t p-4'>
+                      <Skeleton className='h-10 flex-1' />
+                      <Skeleton className='h-10 flex-1' />
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+                {positionsData.map((position, index) => (
+                  <Card
+                    key={position.id}
+                    className={`fade-in-from-bottom ${getDelayClass(index)} flex flex-col
+                      gap-2 justify-between`}
+                  >
+                    <CardHeader className='gap-3'>
+                      {/* Status + admin controls row */}
+                      <div className='flex items-center justify-between'>
+                        <span
+                          className={`inline-flex items-center gap-1.5 rounded-full px-2.5
+                            py-1 text-xs font-semibold ${
+                              position.is_accepting_responses
+                                ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                                : 'bg-red-500/10 text-red-500 dark:text-red-400'
+                            }`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 rounded-full
+                              ${position.is_accepting_responses ? 'bg-green-500' : 'bg-red-500'}`}
+                          />
+                          {position.is_accepting_responses
+                            ? 'Accepting Applications'
+                            : 'Closed'}
+                        </span>
 
-                    <CardTitle
-                      className={`text-xl
-                        ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
-                    >
-                      <Text variant='hd-sm'>{position.label}</Text>
-                    </CardTitle>
-                  </CardHeader>
+                        {user && (
+                          <div className='flex gap-1.5'>
+                            <PositionsActions.AddEdit
+                              position={position}
+                              onPositionSaved={fetchPositionFromDatabase}
+                              trigger={
+                                <Button
+                                  variant='secondary'
+                                  size='icon'
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Edit />
+                                </Button>
+                              }
+                            />
+                            <PositionsActions.Delete
+                              position={position}
+                              onPositionDeleted={fetchPositionFromDatabase}
+                              trigger={
+                                <Button
+                                  variant='destructive'
+                                  size='icon'
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Trash2 />
+                                </Button>
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                  {position.description && (
-                    <CardContent>
-                      <Text
-                        variant='muted'
-                        size='sm'
-                        className={`leading-relaxed
+                      <CardTitle
+                        className={`text-xl
                           ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
                       >
-                        {position.description}
-                      </Text>
-                    </CardContent>
-                  )}
+                        <Text variant='hd-sm'>{position.label}</Text>
+                      </CardTitle>
+                    </CardHeader>
 
-                  <CardFooter className='flex gap-2 border-t pt-4'>
-                    <Button
-                      variant='secondary'
-                      className='flex-1'
-                      onClick={() => handleCopyLink(position.form_url, position.label)}
-                      disabled={!position.is_accepting_responses && !user}
-                    >
-                      <Clipboard className='h-4 w-4' /> Copy Link
-                    </Button>
-                    <Button
-                      variant='default'
-                      className='flex-1'
-                      disabled={!position.is_accepting_responses && !user}
-                      asChild
-                    >
-                      <Link
-                        href={position.form_url}
-                        target='_blank'
-                        rel='noopener noreferrer'
+                    {position.description && (
+                      <CardContent>
+                        <Text
+                          variant='muted'
+                          size='sm'
+                          className={`leading-relaxed
+                            ${!position.is_accepting_responses ? 'opacity-50' : ''}`}
+                        >
+                          {position.description}
+                        </Text>
+                      </CardContent>
+                    )}
+
+                    <CardFooter className='flex gap-2 border-t pt-4'>
+                      <Button
+                        variant='secondary'
+                        className='flex-1'
+                        onClick={() => handleCopyLink(position.form_url, position.label)}
+                        disabled={!position.is_accepting_responses && !user}
                       >
-                        <ExternalLink className='h-4 w-4' /> Go to Form
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
+                        <Clipboard className='h-4 w-4' /> Copy Link
+                      </Button>
+                      <Button
+                        variant='default'
+                        className='flex-1'
+                        disabled={!position.is_accepting_responses && !user}
+                        asChild
+                      >
+                        <Link
+                          href={position.form_url}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          <ExternalLink className='h-4 w-4' /> Go to Form
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </Card>
       </section>
     </div>
   );
