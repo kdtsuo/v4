@@ -17,22 +17,17 @@ import {
 } from '@/components/ui';
 import * as CommitteeAction from '@/components/CommitteeActions';
 import Image from 'next/image';
-import { getDelayClass } from '@/utils';
+import {
+  extractInstagramUsername,
+  getDelayClass,
+  instagramAvatarUrl,
+  instagramProfileUrl,
+} from '@/utils';
 import { Text } from '@/components/Text';
 
 const instagramIcon = '/assets/img/icons/instagram.svg';
 const linkedinIcon = '/assets/img/icons/linkedin.svg';
 const githubIcon = '/assets/img/icons/github.svg';
-
-function extractInstagramUsername(url: string): string | null {
-  try {
-    const path = new URL(url).pathname;
-    const segment = path.split('/').filter(Boolean)[0];
-    return segment || null;
-  } catch {
-    return null;
-  }
-}
 
 function getInitials(fullName: string) {
   const names = fullName.split(' ');
@@ -51,7 +46,7 @@ function useInstagramBio(member: TeamMember) {
 
     let cancelled = false;
 
-    fetch(`/api/instagram-profile?username=${encodeURIComponent(username)}`)
+    fetch(instagramProfileUrl(username))
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data.bio) setBio(data.bio);
@@ -76,9 +71,7 @@ function MemberAvatar({ member }: { member: TeamMember }) {
 
   const src =
     member.profile_image_url ||
-    (fallbackUsername
-      ? `/api/instagram-avatar?username=${encodeURIComponent(fallbackUsername)}`
-      : undefined);
+    (fallbackUsername ? instagramAvatarUrl(fallbackUsername) : undefined);
 
   return (
     <Avatar className='size-32 shrink-0'>

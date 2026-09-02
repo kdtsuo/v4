@@ -233,7 +233,7 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
           </DialogClose>
           <Button asChild>
             <Link href={event.link} target='_blank' rel='noopener noreferrer'>
-              Buy on Rubric
+              Buy on Rubric for {event.price}
               <ExternalLink size={14} className='ml-1.5' />
             </Link>
           </Button>
