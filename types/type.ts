@@ -101,6 +101,36 @@ export interface IconMapItem {
   imagePath?: string;
 }
 
+// Named ClubEvent rather than Event to avoid shadowing the DOM `Event` global.
+export interface ClubEvent {
+  id: string;
+  title: string;
+  location: string;
+  date: string;
+  day: string;
+  month: string;
+  price: string;
+  image: string;
+  link: string;
+  isPast?: boolean;
+}
+
+export interface MerchItem {
+  id: string;
+  title: string;
+  description: string | null;
+  price: string;
+  image: string;
+  link: string;
+  preOrder: boolean;
+}
+
+export interface ClubData {
+  upcomingEvents: ClubEvent[];
+  pastEvents: ClubEvent[];
+  merchandise: MerchItem[];
+}
+
 export interface TeamMember {
   id: string;
   full_name: string;

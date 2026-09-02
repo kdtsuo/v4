@@ -2,11 +2,13 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, MapPin, ArrowRight, ExternalLink, ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { Calendar, MapPin, ArrowRight, ExternalLink, Star } from 'lucide-react';
 import { Text } from '@/components/Text';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getDelayClass } from '@/utils';
+import type { ClubData, ClubEvent } from '@/types';
+import { ExpandableGridSection } from './ExpandableGridSection';
 import { Badge } from './ui/badge';
 import { Card, CardHeader, CardContent, CardFooter } from './ui/card';
 import {
@@ -17,24 +19,6 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { Button } from './ui/button';
-
-interface Event {
-  id: string;
-  title: string;
-  location: string;
-  date: string;
-  day: string;
-  month: string;
-  price: string;
-  image: string;
-  link: string;
-  isPast?: boolean;
-}
-
-interface EventsData {
-  upcomingEvents: Event[];
-  pastEvents: Event[];
-}
 
 interface Review {
   displayName: string;
@@ -47,25 +31,6 @@ interface ReviewsData {
   reviews: Review[];
   avgRating: number;
   totalReviews: number;
-}
-
-// Matches the grid's own breakpoints: grid-cols-1 / sm:grid-cols-2 / lg:grid-cols-3
-function useGridCols() {
-  const [cols, setCols] = useState(1);
-
-  useEffect(() => {
-    function update() {
-      const w = window.innerWidth;
-      if (w >= 1024) setCols(3);
-      else if (w >= 640) setCols(2);
-      else setCols(1);
-    }
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
-
-  return cols;
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -165,7 +130,7 @@ function ReviewsSection() {
   );
 }
 
-function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
+function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }) {
   const isFree = event.price.toLowerCase().includes('free');
   const [description, setDescription] = useState<string | null>(null);
   const [descLoading, setDescLoading] = useState(false);
@@ -278,7 +243,7 @@ function EventDetailsDialog({ event, open }: { event: Event; open: boolean }) {
   );
 }
 
-function EventCard({ event, index }: { event: Event; index: number }) {
+function EventCard({ event, index }: { event: ClubEvent; index: number }) {
   const isFree = event.price.toLowerCase().includes('free');
   const [open, setOpen] = useState(false);
 
@@ -373,75 +338,8 @@ function EventCard({ event, index }: { event: Event; index: number }) {
   );
 }
 
-function EventsSection({
-  title,
-  events,
-  emptyMessage,
-}: {
-  title: string;
-  events: Event[];
-  emptyMessage?: string;
-}) {
-  const cols = useGridCols();
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    setExpanded(false);
-  }, [events]);
-
-  if (events.length === 0) {
-    if (!emptyMessage) return null;
-    return (
-      <div className='mb-12 last:mb-0'>
-        <Text variant='caption' size='xs' className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'>
-          {title}
-        </Text>
-        <div className='border rounded-xl border-dashed'>
-          <Text variant='default' className='py-8 text-center text-muted-foreground'>
-            {emptyMessage}
-          </Text>
-        </div>
-      </div>
-    );
-  }
-
-  const hasMore = events.length > cols;
-  const visibleEvents = expanded ? events : events.slice(0, cols);
-
-  return (
-    <div className='mb-12 last:mb-0'>
-      <div className='mb-2 flex flex-col items-center gap-4 justify-center'>
-        <Text variant='caption' size='xs' className='font-semibold uppercase tracking-[0.2em]'>
-          {title}
-        </Text>
-
-        {hasMore && (
-          <Button
-            type='button'
-            onClick={() => setExpanded((e) => !e)}
-          >
-            <Text as='span' variant='label' size='xs' className='font-semibold uppercase tracking-wide'>
-              {expanded ? 'Show less' : 'Show more'}
-            </Text>
-            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </Button>
-        )}
-      </div>
-
-      <div
-        className='grid auto-rows-70 grid-cols-1 gap-4 sm:grid-cols-2
-          lg:grid-cols-3'
-      >
-        {visibleEvents.map((event, i) => (
-          <EventCard key={event.id} event={event} index={i} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function Events() {
-  const [eventsData, setEventsData] = useState<EventsData>({
+  const [events, setEvents] = useState<Pick<ClubData, 'upcomingEvents' | 'pastEvents'>>({
     upcomingEvents: [],
     pastEvents: [],
   });
@@ -449,25 +347,25 @@ export function Events() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchEvents() {
+    async function fetchClub() {
       try {
         setLoading(true);
-        const response = await fetch('/api/events');
-        if (!response.ok) throw new Error('Failed to fetch events');
-        const data: EventsData = await response.json();
-        setEventsData(data);
+        const response = await fetch('/api/club');
+        if (!response.ok) throw new Error('Failed to fetch club data');
+        const data: ClubData = await response.json();
+        setEvents({ upcomingEvents: data.upcomingEvents, pastEvents: data.pastEvents });
         setError(null);
       } catch (err) {
-        console.error('Error fetching events:', err);
+        console.error('Error fetching club data:', err);
         setError('Failed to load events. Please try again later.');
       } finally {
         setLoading(false);
       }
     }
-    fetchEvents();
+    fetchClub();
   }, []);
 
-  const { upcomingEvents, pastEvents } = eventsData;
+  const { upcomingEvents, pastEvents } = events;
 
   return (
     <section className='container mx-auto px-4 mb-4 mt-10'>
@@ -493,11 +391,16 @@ export function Events() {
 
         {!loading && !error && (
           <>
-            <EventsSection
+            <ExpandableGridSection
               title='Upcoming Events'
-              events={upcomingEvents}
+              items={upcomingEvents}
+              renderCard={(event, i) => <EventCard event={event} index={i} />}
             />
-            <EventsSection title='Past Events' events={pastEvents} />
+            <ExpandableGridSection
+              title='Past Events'
+              items={pastEvents}
+              renderCard={(event, i) => <EventCard event={event} index={i} />}
+            />
             <ReviewsSection />
           </>
         )}

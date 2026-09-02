@@ -1,5 +1,5 @@
 'use client';
-import { Discover, LinkTrees, Events } from '@/components/';
+import { Discover, LinkTrees, Events, Merchandise } from '@/components/';
 import { useTheme } from 'next-themes';
 import { Text } from '@/components/Text';
 
@@ -23,6 +23,7 @@ export default function Home() {
           <LinkTrees />
         </div>
         <Events />
+        <Merchandise />
         <Discover />
       </div>
     </>

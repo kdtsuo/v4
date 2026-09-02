@@ -7,3 +7,5 @@ export { Discover } from './Discover';
 export { DiscoverCard } from './DiscoverCard';
 export { Activities } from './Activities';
 export { Events } from './Events';
+export { Merchandise } from './Merchandise';
+export { ExpandableGridSection } from './ExpandableGridSection';
