@@ -17,12 +17,7 @@ import {
 } from '@/components/ui';
 import * as CommitteeAction from '@/components/CommitteeActions';
 import Image from 'next/image';
-import {
-  extractInstagramUsername,
-  getDelayClass,
-  instagramAvatarUrl,
-  instagramProfileUrl,
-} from '@/utils';
+import { getDelayClass } from '@/utils';
 import { Text } from '@/components/Text';
 
 const instagramIcon = '/assets/img/icons/instagram.svg';
@@ -34,44 +29,10 @@ function getInitials(fullName: string) {
   return names.length >= 2 ? `${names[0][0]}${names[1][0]}` : names[0][0];
 }
 
-function useInstagramBio(member: TeamMember) {
-  const [bio, setBio] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Only fetch a fallback bio if there's no manually set bio and an Instagram link exists
-    if (member.bio || !member.instagram_url) return;
-
-    const username = extractInstagramUsername(member.instagram_url);
-    if (!username) return;
-
-    let cancelled = false;
-
-    fetch(instagramProfileUrl(username))
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled && data.bio) setBio(data.bio);
-      })
-      .catch(() => {
-        // Silently fall through — no bio shown, this is a best-effort enhancement
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [member.bio, member.instagram_url]);
-
-  return bio;
-}
-
 function MemberAvatar({ member }: { member: TeamMember }) {
-  const fallbackUsername =
-    !member.profile_image_url && member.instagram_url
-      ? extractInstagramUsername(member.instagram_url)
-      : null;
-
-  const src =
-    member.profile_image_url ||
-    (fallbackUsername ? instagramAvatarUrl(fallbackUsername) : undefined);
+  // Anything set by an admin wins; the Instagram columns are a cache filled by
+  // scripts/scrape-instagram.mjs and are blank for private accounts.
+  const src = member.profile_image_url || member.instagram_avatar_url || undefined;
 
   return (
     <Avatar className='size-32 shrink-0'>
@@ -211,8 +172,7 @@ function MemberCard({
   onMemberSaved: () => void;
   onMemberDeleted: () => void;
 }) {
-  const instagramBio = useInstagramBio(member);
-  const displayBio = member.bio || instagramBio;
+  const displayBio = member.bio || member.instagram_bio;
 
   return (
     <Card

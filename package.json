@@ -80,6 +80,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "prettier": "^3.6.2",
+    "puppeteer-core": "^25.9.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

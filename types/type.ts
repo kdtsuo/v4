@@ -140,6 +140,10 @@ export interface TeamMember {
   instagram_url: string;
   linkedin_url: string;
   github_url: string;
+  // Cached by scripts/scrape-instagram.mjs; the manual columns above win when set.
+  instagram_avatar_url?: string | null;
+  instagram_bio?: string | null;
+  instagram_synced_at?: string | null;
   order_index: number;
   created_at: string;
   updated_at: string;
