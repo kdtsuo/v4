@@ -214,7 +214,7 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
               )}
               {!descLoading && description && (
                 <div
-                  className='prose prose-sm max-w-none text-muted-foreground'
+                  className='rubric-description'
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               )}

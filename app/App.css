@@ -68,6 +68,14 @@
   .fade-in-from-top {
     @apply animate-in slide-in-from-top-10 fade-in fill-mode-both duration-500;
   }
+
+  .rubric-description {
+    @apply max-w-none text-sm leading-relaxed text-muted-foreground;
+  }
+
+  .rubric-description :where(p, div, span, li, em, strong, a) {
+    @apply dark:!text-inherit;
+  }
 }
 
 @theme {
