@@ -140,7 +140,7 @@ export default function Committee() {
               <Loader2 className='size-10 animate-spin text-muted-foreground' />
             </div>
           ) : (
-            <div className='grid grid-cols-1 gap-4 lg:grid-cols-3'>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-4'>
               {sortedMembers.map((member, index) => (
                 <MemberCard
                   key={member.id}
@@ -214,7 +214,7 @@ function MemberCard({
           <Badge variant={getBadgeVariant(member.role)} className='w-fit'>
             {member.role}
           </Badge>
-
+          <MemberSocialLinks member={member} />
           {displayBio && (
             <Text
               variant='muted'
@@ -224,8 +224,6 @@ function MemberCard({
               {displayBio}
             </Text>
           )}
-
-          <MemberSocialLinks member={member} />
         </div>
       </CardContent>
     </Card>
