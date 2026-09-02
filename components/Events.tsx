@@ -273,14 +273,19 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
                 className='absolute left-4 top-4 rounded-xl bg-white/20 px-3 py-2 text-center
                   backdrop-blur-sm transition-all duration-300 group-hover:bg-white/30'
               >
-                <div className='text-xl font-bold leading-none text-white'>{event.day}</div>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='lg'
+                  className='font-bold text-white tracking-wide'
+                >{event.day}
+                </Text>
                 <Text
                   as='span'
                   variant='label'
                   size='xs'
-                  className='mt-1 block uppercase tracking-wide text-white'
-                >
-                  {event.month}
+                  className='mt-1 block uppercase tracking-wide text-white '
+                >{event.month}
                 </Text>
               </div>
             )}

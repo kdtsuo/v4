@@ -27,7 +27,7 @@ export async function GET() {
     }
     return Response.json({
       avgRating: data.avgRating ?? 0,
-      totalReviews: data.totalReviews ?? 0,
+      totalReviews: data.numberOfRatings ?? 0,
       reviews: (data.reviews ?? []).map((r: any) => ({
         displayName: r.displayName,
         rating: r.rating,
