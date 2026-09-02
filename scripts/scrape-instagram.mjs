@@ -5,7 +5,12 @@
 // in a real browser, so this drives headless Chrome and reads the page instead.
 // Private accounts serve an empty og:image and are skipped.
 //
+// Must be run from a residential connection. Instagram serves datacenter IPs
+// (CI runners, cloud hosts) a login wall rather than the profile, so this
+// cannot run in GitHub Actions or on Vercel; the script aborts if it sees one.
+//
 // Usage: node scripts/scrape-instagram.mjs [--dry-run] [--only=username,...]
+//        node scripts/scrape-instagram.mjs --reset   # clear all cached data
 
 import { createClient } from '@supabase/supabase-js';
 import puppeteer from 'puppeteer-core';
@@ -21,8 +26,20 @@ const BETWEEN_PROFILES_MS = 2000;
 
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
+const doReset = args.includes('--reset');
 const onlyArg = args.find((a) => a.startsWith('--only='));
 const only = onlyArg ? onlyArg.slice('--only='.length).split(',').filter(Boolean) : null;
+
+class BlockedError extends Error {
+  constructor(title) {
+    super(
+      `Instagram served a login wall instead of a profile (page title: "${title}").\n` +
+        'This IP is blocked — datacenter ranges such as CI runners always are.\n' +
+        'Run this from a residential connection instead. Nothing was written.'
+    );
+    this.name = 'BlockedError';
+  }
+}
 
 // Supabase keys are JWTs whose payload carries the Postgres role they assume.
 function keyRole(key) {
@@ -50,15 +67,14 @@ export function extractInstagramUsername(url) {
   }
 }
 
-// The bio lives in one of the JSON blobs Instagram inlines into the document,
-// so pull it out as a JSON string literal and let JSON.parse handle the escapes
-// (bios are full of emoji surrogate pairs and newlines).
-function extractBio(html) {
-  const match = html.match(/"biography":\s*("(?:[^"\\]|\\.)*")/);
+// Profile fields live in the JSON blobs Instagram inlines into the document.
+// They are JSON string literals, so JSON.parse handles the escaping (bios are
+// full of emoji surrogate pairs and newlines).
+function extractJsonString(html, key) {
+  const match = html.match(new RegExp(`"${key}":\\s*("(?:[^"\\\\]|\\\\.)*")`));
   if (!match) return null;
   try {
-    const bio = JSON.parse(match[1]).trim();
-    return bio || null;
+    return JSON.parse(match[1]).trim() || null;
   } catch {
     return null;
   }
@@ -79,13 +95,27 @@ async function scrapeProfile(page, username) {
     return { status: 'not-found' };
   }
 
-  const html = await page.content();
-  const avatarUrl = await page.evaluate(
-    () => document.querySelector('meta[property="og:image"]')?.content || null
-  );
-  const bio = extractBio(html);
+  // A real profile page is titled "Name (@username) • Instagram photos and
+  // videos". Anything else is the login wall, which Instagram serves to IPs it
+  // doesn't like (datacenter ranges especially). That page still carries a
+  // generic og:image and no biography, so without this check it reads as a
+  // successful scrape and overwrites everyone with the same placeholder.
+  if (!title.includes(`(@${username})`)) {
+    return { status: 'blocked', title };
+  }
 
-  // Private accounts render the profile shell but blank out og:image.
+  const html = await page.content();
+  const bio = extractJsonString(html, 'biography');
+
+  // Read the avatar from the inlined JSON rather than og:image: private
+  // accounts blank out the meta tag but still expose profile_pic_url, which
+  // matches what Instagram itself shows for a private profile.
+  const avatarUrl =
+    extractJsonString(html, 'profile_pic_url') ||
+    (await page.evaluate(
+      () => document.querySelector('meta[property="og:image"]')?.content || null
+    ));
+
   if (!avatarUrl) return { status: 'no-avatar', bio };
 
   return { status: 'ok', avatarUrl, bio };
@@ -108,6 +138,34 @@ async function uploadAvatar(supabase, memberId, avatarUrl) {
   return `${data.publicUrl}?v=${Date.now()}`;
 }
 
+// Clears the cache columns and the stored avatars, for undoing a bad sync.
+async function reset(supabase) {
+  const { data: members, error } = await supabase
+    .from('team_members')
+    .select('id')
+    .not('instagram_synced_at', 'is', null);
+  if (error) throw error;
+
+  if (members.length === 0) {
+    console.log('Nothing to reset.');
+    return;
+  }
+
+  const { error: removeError } = await supabase.storage
+    .from(BUCKET)
+    .remove(members.map((m) => `${m.id}.jpg`));
+  if (removeError) throw removeError;
+
+  const { data: cleared, error: updateError } = await supabase
+    .from('team_members')
+    .update({ instagram_avatar_url: null, instagram_bio: null, instagram_synced_at: null })
+    .not('instagram_synced_at', 'is', null)
+    .select('id');
+  if (updateError) throw updateError;
+
+  console.log(`Reset ${cleared.length} row(s) and removed ${members.length} stored avatar(s).`);
+}
+
 async function main() {
   if (!SUPABASE_URL || !SUPABASE_KEY) {
     console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
@@ -127,6 +185,11 @@ async function main() {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: { persistSession: false },
   });
+
+  if (doReset) {
+    await reset(supabase);
+    return;
+  }
 
   const { data: members, error } = await supabase
     .from('team_members')
@@ -161,6 +224,13 @@ async function main() {
       try {
         const result = await scrapeProfile(page, member.username);
 
+        // Being served the login wall is about this machine's IP, not this
+        // member, so every remaining profile would fail the same way. Stop
+        // rather than march through the list writing placeholder data.
+        if (result.status === 'blocked') {
+          throw new BlockedError(result.title);
+        }
+
         if (result.status !== 'ok') {
           counts[result.status]++;
           console.log(`- ${label}: ${result.status}`);
@@ -190,6 +260,7 @@ async function main() {
           console.log(`- ${label}: synced — bio=${result.bio ? 'yes' : 'none'}`);
         }
       } catch (err) {
+        if (err instanceof BlockedError) throw err;
         counts.failed++;
         console.log(`- ${label}: FAILED — ${err.message}`);
       }

@@ -6,6 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint",
+    "sync:instagram": "node --env-file=.env scripts/scrape-instagram.mjs",
     "start": "next start"
   },
   "dependencies": {
