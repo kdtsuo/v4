@@ -7,6 +7,7 @@
     "dev": "next dev",
     "lint": "eslint",
     "sync:instagram": "node --env-file=.env scripts/scrape-instagram.mjs",
+    "clear:instagram": "node --env-file=.env scripts/clear-instagram-cache.mjs",
     "start": "next start"
   },
   "dependencies": {

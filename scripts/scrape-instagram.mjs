@@ -9,15 +9,13 @@
 // (CI runners, cloud hosts) a login wall rather than the profile, so this
 // cannot run in GitHub Actions or on Vercel; the script aborts if it sees one.
 //
-// Usage: node scripts/scrape-instagram.mjs [--dry-run] [--only=username,...]
-//        node scripts/scrape-instagram.mjs --reset   # clear all cached data
+// Usage: pnpm sync:instagram
+//        pnpm sync:instagram -- --dry-run [--only=username,...]
+//
+// To wipe what it wrote and start over, see scripts/clear-instagram-cache.mjs.
 
-import { createClient } from '@supabase/supabase-js';
 import puppeteer from 'puppeteer-core';
-
-const SUPABASE_URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const BUCKET = 'avatars';
+import { BUCKET, createServiceClient } from './supabase-client.mjs';
 
 // Time for Instagram's client-side render to populate the page.
 const RENDER_WAIT_MS = 4000;
@@ -26,7 +24,6 @@ const BETWEEN_PROFILES_MS = 2000;
 
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
-const doReset = args.includes('--reset');
 const onlyArg = args.find((a) => a.startsWith('--only='));
 const only = onlyArg ? onlyArg.slice('--only='.length).split(',').filter(Boolean) : null;
 
@@ -38,15 +35,6 @@ class BlockedError extends Error {
         'Run this from a residential connection instead. Nothing was written.'
     );
     this.name = 'BlockedError';
-  }
-}
-
-// Supabase keys are JWTs whose payload carries the Postgres role they assume.
-function keyRole(key) {
-  try {
-    return JSON.parse(Buffer.from(key.split('.')[1], 'base64').toString()).role ?? null;
-  } catch {
-    return null;
   }
 }
 
@@ -138,58 +126,8 @@ async function uploadAvatar(supabase, memberId, avatarUrl) {
   return `${data.publicUrl}?v=${Date.now()}`;
 }
 
-// Clears the cache columns and the stored avatars, for undoing a bad sync.
-async function reset(supabase) {
-  const { data: members, error } = await supabase
-    .from('team_members')
-    .select('id')
-    .not('instagram_synced_at', 'is', null);
-  if (error) throw error;
-
-  if (members.length === 0) {
-    console.log('Nothing to reset.');
-    return;
-  }
-
-  const { error: removeError } = await supabase.storage
-    .from(BUCKET)
-    .remove(members.map((m) => `${m.id}.jpg`));
-  if (removeError) throw removeError;
-
-  const { data: cleared, error: updateError } = await supabase
-    .from('team_members')
-    .update({ instagram_avatar_url: null, instagram_bio: null, instagram_synced_at: null })
-    .not('instagram_synced_at', 'is', null)
-    .select('id');
-  if (updateError) throw updateError;
-
-  console.log(`Reset ${cleared.length} row(s) and removed ${members.length} stored avatar(s).`);
-}
-
 async function main() {
-  if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
-    process.exit(1);
-  }
-
-  // The anon key reads fine but silently writes nothing, so catch the wrong key
-  // up front rather than after a couple of minutes of scraping.
-  if (!dryRun && keyRole(SUPABASE_KEY) !== 'service_role') {
-    console.error(
-      `SUPABASE_SERVICE_ROLE_KEY looks like a "${keyRole(SUPABASE_KEY) ?? 'unknown'}" key, ` +
-        'not service_role.\nGet it from Supabase → Project Settings → API → service_role.'
-    );
-    process.exit(1);
-  }
-
-  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { persistSession: false },
-  });
-
-  if (doReset) {
-    await reset(supabase);
-    return;
-  }
+  const supabase = createServiceClient({ requireWrite: !dryRun });
 
   const { data: members, error } = await supabase
     .from('team_members')
