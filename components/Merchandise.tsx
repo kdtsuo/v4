@@ -86,7 +86,7 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
           </DialogClose>
           <Button asChild>
             <Link href={item.link} target='_blank' rel='noopener noreferrer'>
-              Buy on Rubric for {item.price}
+              {item.price === 'Free'?'Get it free on Rubric':'Get it on Rubric for ' + item.price}
               <ExternalLink size={14} className='ml-1.5' />
             </Link>
           </Button>
