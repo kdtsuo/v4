@@ -34,8 +34,10 @@ function MemberAvatar({ member }: { member: TeamMember }) {
   // scripts/scrape-instagram.mjs and are blank for private accounts.
   const src = member.profile_image_url || member.instagram_avatar_url || undefined;
 
+  // 96px: Instagram only serves 150px avatars to logged-out clients, so a
+  // larger frame renders visibly soft on high-density displays.
   return (
-    <Avatar className='size-32 shrink-0'>
+    <Avatar className='size-24 shrink-0'>
       <AvatarImage src={src} alt={member.full_name} />
       <AvatarFallback>{getInitials(member.full_name)}</AvatarFallback>
     </Avatar>
