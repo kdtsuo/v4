@@ -73,7 +73,9 @@ function sortPositions(positions: Position[]): Position[] {
     if (a.is_accepting_responses !== b.is_accepting_responses) {
       return Number(b.is_accepting_responses) - Number(a.is_accepting_responses);
     }
-    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+    const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+    return aTime - bTime;
   });
 }
 
