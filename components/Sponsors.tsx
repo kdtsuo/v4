@@ -131,19 +131,19 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
               size={160}
               className='max-h-36 object-contain'
             />
-            <Badge variant={tenureBadgeVariant(time.months)} className='absolute top-4 left-4'>
-              <History size={12} />
-              {tenureLabel(time)}
-            </Badge>
-            <Badge className='absolute top-4 right-4 rounded-full border border-white bg-amber-500/90 px-3 py-1 backdrop-blur-sm'>
+            <Badge className='absolute top-4 left-4 rounded-full bg-amber-500/90 px-3 py-1 backdrop-blur-sm'>
               <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
                 {sponsor.text}
               </Text>
             </Badge>
           </div>
 
-          <CardHeader className='border-b py-3'>
+          <CardHeader className='border-b py-3 flex flex-col gap-2'>
             <Text variant='hd-md'>{sponsor.title}</Text>
+            <Badge variant={tenureBadgeVariant(time.months)}>
+              <History size={12} />
+              {tenureLabel(time)}
+            </Badge>
           </CardHeader>
 
           <CardContent className='flex flex-col gap-3 py-3'>
@@ -241,13 +241,8 @@ function SponsorCard({
                   to-transparent transition-all duration-300 group-hover:from-black/75'
               />
 
-              <Badge variant={tenureBadgeVariant(time.months)} className='absolute top-4 left-4'>
-                <History size={12} />
-                {tenureLabel(time)}
-              </Badge>
-
               <Badge
-                className='absolute top-4 right-4 rounded-full bg-amber-500/80 px-3 py-1
+                className='absolute top-4 left-4 rounded-full bg-amber-500/80 px-3 py-1
                   backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/90'
               >
                 <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
