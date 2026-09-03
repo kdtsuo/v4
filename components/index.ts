@@ -8,4 +8,5 @@ export { DiscoverCard } from './DiscoverCard';
 export { Activities } from './Activities';
 export { Events } from './Events';
 export { Merchandise } from './Merchandise';
+export { Sponsors } from './Sponsors';
 export { ExpandableGridSection } from './ExpandableGridSection';
