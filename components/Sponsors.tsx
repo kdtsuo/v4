@@ -124,7 +124,7 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
 
       <Card className='flex min-h-0 flex-1 flex-col gap-0 border-0 py-0'>
         <div className='min-h-0 flex-1 overflow-y-auto'>
-          <div className='relative flex min-h-48 items-center justify-center bg-muted/30 p-8'>
+          <div className='relative flex min-h-48 items-center justify-center bg-muted p-8'>
             <SponsorLogo
               src={sponsor.image}
               alt={sponsor.title}
@@ -226,7 +226,7 @@ function SponsorCard({
             type='button'
             className={`group block h-full w-full text-left fade-in-from-bottom ${getDelayClass(index)}`}
           >
-            <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg'>
+            <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg border-muted border'>
               <div className='absolute inset-0' style={{ background: dottedBg }} />
               <div className='absolute inset-0 flex items-center justify-center p-8'>
                 <SponsorLogo
