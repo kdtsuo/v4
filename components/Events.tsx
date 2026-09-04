@@ -160,7 +160,7 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
   }, [open, event.id]);
 
   return (
-    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[60vh] sm:max-h-[85vh] '>
+    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[70vh] sm:max-h-[85vh] '>
       {/* Visually hidden title for accessibility — Radix requires a DialogTitle */}
       <DialogTitle className='sr-only'>{event.title}</DialogTitle>
 
@@ -227,14 +227,14 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
           </CardContent>
         </div>
 
-        <CardFooter className='flex justify-end gap-2 border-t-1 p-4 shrink-0'>
+        <CardFooter className='flex flex-col-reverse  sm:flex-row flex-wrap justify-end gap-2 border-t p-4 shrink-0'>
           <DialogClose asChild>
-            <Button variant='outline'>Close</Button>
+            <Button variant='outline' className='w-full sm:w-auto'>Close</Button>
           </DialogClose>
-          <Button asChild>
+          <Button asChild className='w-full sm:w-auto'>
             <Link href={event.link} target='_blank' rel='noopener noreferrer'>
-              {event.price === 'Free'?'Get it free on Rubric':'Get it on Rubric for ' + event.price}
-              <ExternalLink size={14} className='ml-1.5' />
+              {event.price === 'Free'?'Free on Rubric':event.price + " on Rubric"}
+              <ExternalLink size={14}  />
             </Link>
           </Button>
         </CardFooter>
