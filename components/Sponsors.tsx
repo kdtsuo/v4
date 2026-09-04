@@ -159,20 +159,20 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
           </CardContent>
         </div>
 
-        <CardFooter className='flex shrink-0 justify-end gap-2 border-t p-4'>
+        <CardFooter className='flex flex-col-reverse  sm:flex-row flex-wrap justify-end gap-2 border-t p-4 shrink-0'>
           <DialogClose asChild>
-            <Button variant='outline'>Close</Button>
+            <Button variant='outline' className='w-full sm:w-auto'>Close</Button>
           </DialogClose>
-          <Button asChild variant='secondary'>
+          <Button asChild variant='secondary' className='w-full sm:w-auto'>
             <a href={sponsor.maplink} target='_blank' rel='noopener noreferrer'>
               Directions
-              <ExternalLink size={14} className='ml-1.5' />
+              <ExternalLink size={14} />
             </a>
           </Button>
-          <Button asChild>
+          <Button asChild className='w-full sm:w-auto'>
             <a href={sponsor.websitelink} target='_blank' rel='noopener noreferrer'>
               Visit Website
-              <ExternalLink size={14} className='ml-1.5' />
+              <ExternalLink size={14} />
             </a>
           </Button>
         </CardFooter>
