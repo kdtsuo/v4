@@ -119,7 +119,7 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
   const time = getTimeSince(sponsor.created_at);
 
   return (
-    <DialogContent className='flex max-h-[60vh] flex-col overflow-hidden p-0 sm:max-h-[85vh] sm:max-w-lg'>
+    <DialogContent className='flex max-h-[75vh] flex-col overflow-hidden p-0'>
       <DialogTitle className='sr-only'>{sponsor.title}</DialogTitle>
 
       <Card className='flex min-h-0 flex-1 flex-col gap-0 border-0 py-0'>
