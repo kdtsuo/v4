@@ -1,3 +1,5 @@
+import { fetchEventDetails } from '@/lib/rubric';
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -5,23 +7,7 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const res = await fetch('https://api.hellorubric.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-      body: new URLSearchParams({
-        endpoint: 'https://appserver.getqpay.com:9090/AppServerSwapnil/event/details',
-        details: JSON.stringify({
-          eventId: id,
-          currentUrl: `https://campus.hellorubric.com/?s=7805`,
-          device: 'web_portal',
-          version: 4,
-          timestamp: Date.now(),
-        }),
-      }),
-    });
-
-    if (!res.ok) throw new Error('Failed to fetch event details');
-    const data = await res.json();
+    const data = await fetchEventDetails(id);
 
     if (!data.success) {
       return Response.json({ error: 'Event not found' }, { status: 404 });

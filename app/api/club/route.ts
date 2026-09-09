@@ -1,23 +1,8 @@
+import { fetchClubLandingPage } from '@/lib/rubric';
+
 export async function GET() {
   try {
-    const res = await fetch('https://api.hellorubric.com/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-      body: new URLSearchParams({
-        endpoint: 'getSocietyLandingPage',
-        details: JSON.stringify({
-          societyid: '7805',
-          domain: 'campus.hellorubric.com',
-          currentUrl: 'https://campus.hellorubric.com/?s=7805',
-          device: 'web_portal',
-          version: 4,
-          timestamp: Date.now(),
-        }),
-      }),
-    });
-
-    if (!res.ok) throw new Error('Failed to fetch from Rubric');
-    const data = await res.json();
+    const data = await fetchClubLandingPage();
 
     const eventsSection = data.sections?.find((s: any) => s.sectionname === 'Events');
     const rawEvents = eventsSection?.array ?? [];

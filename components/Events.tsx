@@ -7,6 +7,10 @@ import { Text } from '@/components/Text';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getDelayClass } from '@/utils';
+import {
+  getCachedRubricDescription,
+  setCachedRubricDescription,
+} from '@/utils/rubricDescriptionCache';
 import type { ClubData, ClubEvent } from '@/types';
 import { ExpandableGridSection } from './ExpandableGridSection';
 import { Badge } from './ui/badge';
@@ -138,6 +142,13 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
   useEffect(() => {
     if (!open) return;
 
+    const cached = getCachedRubricDescription(event.id);
+    if (cached !== undefined) {
+      setDescription(cached);
+      setDescLoading(false);
+      return;
+    }
+
     let cancelled = false;
     setDescLoading(true);
     setDescription(null);
@@ -145,7 +156,10 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
     fetch(`/api/events/${event.id}`)
       .then((res) => res.json())
       .then((data) => {
-        if (!cancelled) setDescription(data.description ?? null);
+        if (cancelled) return;
+        const nextDescription = data.description ?? null;
+        setCachedRubricDescription(event.id, nextDescription);
+        setDescription(nextDescription);
       })
       .catch(() => {
         if (!cancelled) setDescription(null);
