@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight, DollarSign, ExternalLink } from 'lucide-react';
 import { Text } from '@/components/Text';
 import { Spinner } from '@/components/ui/spinner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -41,8 +41,8 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
             />
             <div className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent' />
             <Badge
-              className={`border border-white absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
-                ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
+              className={`border absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
+                ${isFree ? 'bg-emerald-500/80' : 'bg-primary'}`}
             >
               <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
                 {item.price}
@@ -50,7 +50,7 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
             </Badge>
             {item.preOrder && (
               <Badge
-                className='border border-white absolute right-4 top-4 rounded-full bg-amber-500/80 px-3 py-1
+                className='border absolute right-4 top-4 rounded-full bg-amber-500/80 px-3 py-1
                   backdrop-blur-sm'
               >
                 <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
@@ -65,6 +65,14 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
           </CardHeader>
 
           <CardContent className='flex flex-col gap-2 pt-2'>
+            <div className='flex flex-col gap-2'>
+              <div className='flex items-center text-muted-foreground'>
+                <DollarSign className='size-4 shrink-0' />
+                <Text as='span' variant='default' size='sm'>
+                  {item.price === 'free' ? 'Free' : item.price.split('$')[1]}
+                </Text>
+              </div>
+            </div>
             <div className='border-t py-3'>
               {item.description ? (
                 <div
@@ -132,7 +140,7 @@ function MerchCard({ item, index }: { item: MerchItem; index: number }) {
             )}
 
             <Badge
-              className={`absolute right-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
+              className={`absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
                 ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
             >
               <Text as='span' variant='label' size='xs' className='font-semibold text-white'>

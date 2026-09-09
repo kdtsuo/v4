@@ -401,11 +401,6 @@ export function Events() {
               items={upcomingEvents}
               renderCard={(event, i) => <EventCard event={event} index={i} />}
             />
-            <ExpandableGridSection
-              title='Past Events'
-              items={pastEvents}
-              renderCard={(event, i) => <EventCard event={event} index={i} />}
-            />
             <ReviewsSection />
           </>
         )}
