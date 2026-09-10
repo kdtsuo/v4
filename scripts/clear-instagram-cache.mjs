@@ -18,7 +18,9 @@ async function main() {
   const { data: members, error } = await supabase
     .from('team_members')
     .select('id, full_name, instagram_avatar_url, instagram_bio')
-    .or('instagram_avatar_url.not.is.null,instagram_bio.not.is.null,instagram_synced_at.not.is.null');
+    .or(
+      'instagram_avatar_url.not.is.null,instagram_bio.not.is.null,instagram_synced_at.not.is.null'
+    );
   if (error) throw error;
 
   if (members.length === 0) {
@@ -26,9 +28,13 @@ async function main() {
     return;
   }
 
-  console.log(`${members.length} member(s) with cached data${dryRun ? ' (dry run)' : ''}:`);
+  console.log(
+    `${members.length} member(s) with cached data${dryRun ? ' (dry run)' : ''}:`
+  );
   for (const m of members) {
-    const has = [m.instagram_avatar_url && 'avatar', m.instagram_bio && 'bio'].filter(Boolean);
+    const has = [m.instagram_avatar_url && 'avatar', m.instagram_bio && 'bio'].filter(
+      Boolean
+    );
     console.log(`- ${m.full_name}: ${has.join(' + ') || 'timestamp only'}`);
   }
 

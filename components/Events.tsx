@@ -45,7 +45,11 @@ function StarRating({ rating }: { rating: number }) {
           key={i}
           size={13}
           strokeWidth={2}
-          className={i < rating ? 'fill-amber-400 text-amber-400' : 'fill-none text-muted-foreground/40'}
+          className={
+            i < rating
+              ? 'fill-amber-400 text-amber-400'
+              : 'fill-none text-muted-foreground/40'
+          }
         />
       ))}
     </div>
@@ -85,7 +89,11 @@ function ReviewsSection() {
   if (loading) {
     return (
       <div className='mb-12 last:mb-0'>
-        <Text variant='caption' size='xs' className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'>
+        <Text
+          variant='caption'
+          size='xs'
+          className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'
+        >
           Reviews
         </Text>
         <div className='flex justify-center py-8'>
@@ -99,7 +107,11 @@ function ReviewsSection() {
 
   return (
     <div className='mb-12 last:mb-0'>
-      <Text variant='caption' size='xs' className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'>
+      <Text
+        variant='caption'
+        size='xs'
+        className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'
+      >
         Reviews
       </Text>
 
@@ -123,7 +135,12 @@ function ReviewsSection() {
                 </Text>
                 <StarRating rating={r.rating} />
               </div>
-              <Text as='p' variant='default' size='sm' className='text-muted-foreground whitespace-pre-line'>
+              <Text
+                as='p'
+                variant='default'
+                size='sm'
+                className='text-muted-foreground whitespace-pre-line'
+              >
                 {r.review}
               </Text>
             </div>
@@ -142,31 +159,35 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
   useEffect(() => {
     if (!open) return;
 
-    const cached = getCachedRubricDescription(event.id);
-    if (cached !== undefined) {
-      setDescription(cached);
-      setDescLoading(false);
-      return;
-    }
-
     let cancelled = false;
-    setDescLoading(true);
-    setDescription(null);
 
-    fetch(`/api/events/${event.id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    void (async () => {
+      await Promise.resolve();
+      if (cancelled) return;
+
+      const cached = getCachedRubricDescription(event.id);
+      if (cached !== undefined) {
+        setDescription(cached);
+        setDescLoading(false);
+        return;
+      }
+
+      setDescLoading(true);
+      setDescription(null);
+
+      try {
+        const res = await fetch(`/api/events/${event.id}`);
+        const data = await res.json();
         if (cancelled) return;
         const nextDescription = data.description ?? null;
         setCachedRubricDescription(event.id, nextDescription);
         setDescription(nextDescription);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setDescription(null);
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setDescLoading(false);
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;
@@ -174,7 +195,10 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
   }, [open, event.id]);
 
   return (
-    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[70vh] sm:max-h-[85vh] '>
+    <DialogContent
+      className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[70vh]
+        sm:max-h-[85vh]'
+    >
       {/* Visually hidden title for accessibility — Radix requires a DialogTitle */}
       <DialogTitle className='sr-only'>{event.title}</DialogTitle>
 
@@ -189,12 +213,20 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
               className='w-full h-auto object-contain'
               sizes='(max-width: 640px) 100vw, 32rem'
             />
-            <div className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent' />
+            <div
+              className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10
+                to-transparent'
+            />
             <Badge
-              className={`border border-white absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
-                ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
+              className={`border border-white absolute left-4 top-4 rounded-full px-3 py-1
+                backdrop-blur-sm ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
             >
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
                 {event.price}
               </Text>
             </Badge>
@@ -241,14 +273,19 @@ function EventDetailsDialog({ event, open }: { event: ClubEvent; open: boolean }
           </CardContent>
         </div>
 
-        <CardFooter className='flex flex-col-reverse  sm:flex-row flex-wrap justify-end gap-2 border-t p-4 shrink-0'>
+        <CardFooter
+          className='flex flex-col-reverse sm:flex-row flex-wrap justify-end gap-2
+            border-t p-4 shrink-0'
+        >
           <DialogClose asChild>
-            <Button variant='outline' className='w-full sm:w-auto'>Close</Button>
+            <Button variant='outline' className='w-full sm:w-auto'>
+              Close
+            </Button>
           </DialogClose>
           <Button asChild className='w-full sm:w-auto'>
             <Link href={event.link} target='_blank' rel='noopener noreferrer'>
-              {event.price === 'Free'?'Free on Rubric':event.price + " on Rubric"}
-              <ExternalLink size={14}  />
+              {event.price === 'Free' ? 'Free on Rubric' : event.price + ' on Rubric'}
+              <ExternalLink size={14} />
             </Link>
           </Button>
         </CardFooter>
@@ -266,15 +303,16 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
       <DialogTrigger asChild>
         <button
           type='button'
-          className={`group block h-full w-full text-left fade-in-from-bottom ${getDelayClass(index)}`}
+          className={`group block h-full w-full text-left fade-in-from-bottom
+            ${getDelayClass(index)}`}
         >
           <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg'>
             <Image
               src={event.image}
               alt={event.title}
               fill
-              className='object-cover object-center t200e group-hover:scale-105 brightness-50
-                group-hover:brightness-100'
+              className='object-cover object-center t200e group-hover:scale-105
+                brightness-50 group-hover:brightness-100'
               sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw'
             />
             <div
@@ -284,22 +322,25 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
 
             {!event.isPast && (
               <div
-                className='absolute left-4 top-4 rounded-xl bg-white/20 px-3 py-2 text-center
-                  backdrop-blur-sm transition-all duration-300 group-hover:bg-white/30'
+                className='absolute left-4 top-4 rounded-xl bg-white/20 px-3 py-2
+                  text-center backdrop-blur-sm transition-all duration-300
+                  group-hover:bg-white/30'
               >
                 <Text
                   as='span'
                   variant='label'
                   size='lg'
                   className='font-bold text-white tracking-wide'
-                >{event.day}
+                >
+                  {event.day}
                 </Text>
                 <Text
                   as='span'
                   variant='label'
                   size='xs'
-                  className='mt-1 block uppercase tracking-wide text-white '
-                >{event.month}
+                  className='mt-1 block uppercase tracking-wide text-white'
+                >
+                  {event.month}
                 </Text>
               </div>
             )}
@@ -308,13 +349,21 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
               className={`absolute right-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
                 ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
             >
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
                 {event.price}
               </Text>
             </Badge>
 
             <div className='absolute bottom-0 left-0 right-0 p-5'>
-              <div className='transition-transform duration-300 translate-y-full group-hover:translate-y-0'>
+              <div
+                className='transition-transform duration-300 translate-y-full
+                  group-hover:translate-y-0'
+              >
                 <Text variant='hd-md' className='text-white line-clamp-2'>
                   {event.title}
                 </Text>
@@ -339,10 +388,16 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
               </div>
 
               <div
-                className='mt-3 flex translate-x-2 items-center gap-1 opacity-0 transition-all
-                  duration-300 group-hover:translate-x-0 group-hover:opacity-100'
+                className='mt-3 flex translate-x-2 items-center gap-1 opacity-0
+                  transition-all duration-300 group-hover:translate-x-0
+                  group-hover:opacity-100'
               >
-                <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='xs'
+                  className='font-semibold text-white'
+                >
                   View Event
                 </Text>
                 <ArrowRight size={14} className='text-white' />
@@ -384,13 +439,17 @@ export function Events() {
     fetchClub();
   }, []);
 
-  const { upcomingEvents, pastEvents } = events;
+  const { upcomingEvents } = events;
 
   return (
     <section className='container mx-auto px-4 mb-4 mt-10'>
       <Card className='p-4'>
         <div className='fade-in-from-bottom text-center'>
-          <Text variant='caption' size='xs' className='mb-1 font-semibold uppercase tracking-[0.2em]'>
+          <Text
+            variant='caption'
+            size='xs'
+            className='mb-1 font-semibold uppercase tracking-[0.2em]'
+          >
             Happening
           </Text>
           <Text variant='hd-xl'>Events</Text>

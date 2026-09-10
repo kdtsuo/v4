@@ -35,9 +35,7 @@ const formSchema = z.object({
     .string()
     .min(1, 'Role is required')
     .max(50, 'Role must be at most 50 characters'),
-  bio: z
-    .string()
-    .max(200, 'Bio must be at most 200 characters'),
+  bio: z.string().max(200, 'Bio must be at most 200 characters'),
   profile_image_url: z.string().url('Please enter a valid image URL').or(z.literal('')),
   instagram_url: z.string().url('Please enter a valid URL').or(z.literal('')),
   linkedin_url: z.string().url('Please enter a valid URL').or(z.literal('')),

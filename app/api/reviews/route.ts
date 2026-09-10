@@ -1,3 +1,10 @@
+interface RubricReview {
+  displayName: string;
+  rating: number;
+  review: string;
+  ratingDate: string;
+}
+
 export async function GET() {
   try {
     const res = await fetch('https://api.hellorubric.com/', {
@@ -28,7 +35,7 @@ export async function GET() {
     return Response.json({
       avgRating: data.avgRating ?? 0,
       totalReviews: data.numberOfRatings ?? 0,
-      reviews: (data.reviews ?? []).map((r: any) => ({
+      reviews: ((data.reviews ?? []) as RubricReview[]).map((r) => ({
         displayName: r.displayName,
         rating: r.rating,
         review: r.review,

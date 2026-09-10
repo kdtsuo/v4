@@ -17,36 +17,39 @@ export function LinkTrees() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchLinks = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('links')
-        .select('*')
-        .order('order', { ascending: true })
-        .order('date', { ascending: false });
+  const fetchLinks = useCallback(
+    async (options?: { silent?: boolean }) => {
+      try {
+        if (!options?.silent) setLoading(true);
+        const { data, error } = await supabase
+          .from('links')
+          .select('*')
+          .order('order', { ascending: true })
+          .order('date', { ascending: false });
 
-      if (error) {
-        console.error('Fetch error details:', error);
-        throw error;
-      }
+        if (error) {
+          console.error('Fetch error details:', error);
+          throw error;
+        }
 
-      if (data && data.length > 0) {
-        setLinks(data);
-      } else {
+        if (data && data.length > 0) {
+          setLinks(data);
+        } else {
+          setLinks(fallbackLinks);
+        }
+      } catch (error) {
+        toast.error('Failed to load links from database');
         setLinks(fallbackLinks);
+        throw error;
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error('Failed to load links from database');
-      setLinks(fallbackLinks);
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
+    },
+    [toast]
+  );
 
   useEffect(() => {
-    fetchLinks();
+    void Promise.resolve().then(() => fetchLinks({ silent: true }));
   }, [fetchLinks]);
 
   return (

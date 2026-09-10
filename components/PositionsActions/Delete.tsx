@@ -35,10 +35,7 @@ export function Delete({ position, onPositionDeleted, trigger }: DeleteProps) {
 
     setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from('positions')
-        .delete()
-        .eq('id', position.id);
+      const { error } = await supabase.from('positions').delete().eq('id', position.id);
 
       if (error) throw error;
 
@@ -60,8 +57,8 @@ export function Delete({ position, onPositionDeleted, trigger }: DeleteProps) {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Position</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete{' '}
-            <strong>{position?.label}</strong>? This action cannot be undone.
+            Are you sure you want to delete <strong>{position?.label}</strong>? This
+            action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

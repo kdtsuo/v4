@@ -70,7 +70,7 @@
   }
 
   .rubric-description {
-    @apply max-w-none text-sm leading-relaxed text-muted-foreground;
+    @apply text-muted-foreground max-w-none text-sm leading-relaxed;
   }
 
   .rubric-description :where(p, div, span, li, em, strong, a) {

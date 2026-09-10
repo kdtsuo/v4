@@ -174,7 +174,9 @@ async function main() {
           console.log(`- ${label}: ${result.status}`);
         } else if (dryRun) {
           counts.ok++;
-          console.log(`- ${label}: ok — bio=${result.bio ? 'yes' : 'none'}, avatar found`);
+          console.log(
+            `- ${label}: ok — bio=${result.bio ? 'yes' : 'none'}, avatar found`
+          );
         } else {
           const publicUrl = await uploadAvatar(supabase, member.id, result.avatarUrl);
           const { data: updated, error: updateError } = await supabase

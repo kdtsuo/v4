@@ -24,7 +24,10 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
   const isFree = item.price.toLowerCase().includes('free');
 
   return (
-    <DialogContent className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[70vh] sm:max-h-[85vh] '>
+    <DialogContent
+      className='overflow-hidden p-0 sm:max-w-lg flex flex-col max-h-[70vh]
+        sm:max-h-[85vh]'
+    >
       {/* Visually hidden title for accessibility — Radix requires a DialogTitle */}
       <DialogTitle className='sr-only'>{item.title}</DialogTitle>
 
@@ -39,21 +42,34 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
               className='w-full h-auto object-contain'
               sizes='(max-width: 640px) 100vw, 32rem'
             />
-            <div className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10 to-transparent' />
+            <div
+              className='absolute inset-0 bg-linear-to-t from-black/80 via-black/10
+                to-transparent'
+            />
             <Badge
-              className={`border absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
-                ${isFree ? 'bg-emerald-500/80' : 'bg-primary'}`}
+              className={`border absolute left-4 top-4 rounded-full px-3 py-1
+                backdrop-blur-sm ${isFree ? 'bg-emerald-500/80' : 'bg-primary'}`}
             >
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
                 {item.price}
               </Text>
             </Badge>
             {item.preOrder && (
               <Badge
-                className='border absolute right-4 top-4 rounded-full bg-amber-500/80 px-3 py-1
-                  backdrop-blur-sm'
+                className='border absolute right-4 top-4 rounded-full bg-amber-500/80 px-3
+                  py-1 backdrop-blur-sm'
               >
-                <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='xs'
+                  className='font-semibold text-white'
+                >
                   Pre-order
                 </Text>
               </Badge>
@@ -88,13 +104,18 @@ function MerchDetailsDialog({ item }: { item: MerchItem }) {
           </CardContent>
         </div>
 
-        <CardFooter className='flex flex-col-reverse  sm:flex-row flex-wrap justify-end gap-2 border-t p-4 shrink-0'>
+        <CardFooter
+          className='flex flex-col-reverse sm:flex-row flex-wrap justify-end gap-2
+            border-t p-4 shrink-0'
+        >
           <DialogClose asChild>
-            <Button variant='outline' className='w-full sm:w-auto'>Close</Button>
+            <Button variant='outline' className='w-full sm:w-auto'>
+              Close
+            </Button>
           </DialogClose>
           <Button asChild className='w-full sm:w-auto'>
             <Link href={item.link} target='_blank' rel='noopener noreferrer'>
-              {item.price === 'Free'?'Free on Rubric': item.price + " on Rubric"}
+              {item.price === 'Free' ? 'Free on Rubric' : item.price + ' on Rubric'}
               <ExternalLink size={14} />
             </Link>
           </Button>
@@ -112,15 +133,16 @@ function MerchCard({ item, index }: { item: MerchItem; index: number }) {
       <DialogTrigger asChild>
         <button
           type='button'
-          className={`group block h-full w-full text-left fade-in-from-bottom ${getDelayClass(index)}`}
+          className={`group block h-full w-full text-left fade-in-from-bottom
+            ${getDelayClass(index)}`}
         >
           <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg'>
             <Image
               src={item.image}
               alt={item.title}
               fill
-              className='object-cover object-center t200e group-hover:scale-105 brightness-50
-                group-hover:brightness-100'
+              className='object-cover object-center t200e group-hover:scale-105
+                brightness-50 group-hover:brightness-100'
               sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw'
             />
             <div
@@ -130,10 +152,16 @@ function MerchCard({ item, index }: { item: MerchItem; index: number }) {
 
             {item.preOrder && (
               <Badge
-                className='absolute left-4 top-4 rounded-full bg-amber-500/80 px-3 py-1 backdrop-blur-sm
-                  transition-all duration-300 group-hover:bg-amber-500/90'
+                className='absolute left-4 top-4 rounded-full bg-amber-500/80 px-3 py-1
+                  backdrop-blur-sm transition-all duration-300
+                  group-hover:bg-amber-500/90'
               >
-                <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='xs'
+                  className='font-semibold text-white'
+                >
                   Pre-order
                 </Text>
               </Badge>
@@ -143,23 +171,37 @@ function MerchCard({ item, index }: { item: MerchItem; index: number }) {
               className={`absolute left-4 top-4 rounded-full px-3 py-1 backdrop-blur-sm
                 ${isFree ? 'bg-emerald-500/80' : 'bg-white/20'}`}
             >
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
                 {item.price}
               </Text>
             </Badge>
 
             <div className='absolute bottom-0 left-0 right-0 p-5'>
-              <div className='transition-transform duration-300 translate-y-full group-hover:translate-y-0'>
+              <div
+                className='transition-transform duration-300 translate-y-full
+                  group-hover:translate-y-0'
+              >
                 <Text variant='hd-md' className='text-white line-clamp-2'>
                   {item.title}
                 </Text>
               </div>
 
               <div
-                className='mt-3 flex translate-x-2 items-center gap-1 opacity-0 transition-all
-                  duration-300 group-hover:translate-x-0 group-hover:opacity-100'
+                className='mt-3 flex translate-x-2 items-center gap-1 opacity-0
+                  transition-all duration-300 group-hover:translate-x-0
+                  group-hover:opacity-100'
               >
-                <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='xs'
+                  className='font-semibold text-white'
+                >
                   View Item
                 </Text>
                 <ArrowRight size={14} className='text-white' />
@@ -204,7 +246,11 @@ export function Merchandise() {
     <section className='container mx-auto px-4 mb-4 mt-10'>
       <Card className='p-4'>
         <div className='fade-in-from-bottom text-center'>
-          <Text variant='caption' size='xs' className='mb-1 font-semibold uppercase tracking-[0.2em]'>
+          <Text
+            variant='caption'
+            size='xs'
+            className='mb-1 font-semibold uppercase tracking-[0.2em]'
+          >
             Shop
           </Text>
           <Text variant='hd-xl'>Merchandise</Text>

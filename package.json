@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "lint": "eslint",
-    "sync:instagram": "node --env-file=.env scripts/scrape-instagram.mjs",
     "clear:instagram": "node --env-file=.env scripts/clear-instagram-cache.mjs",
-    "start": "next start"
+    "dev": "next dev",
+    "format": "prettier --write .",
+    "lint": "eslint",
+    "start": "next start",
+    "sync:instagram": "node --env-file=.env scripts/scrape-instagram.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

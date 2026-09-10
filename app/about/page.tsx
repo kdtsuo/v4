@@ -29,7 +29,8 @@ export default function About() {
             <Text
               variant='default'
               size='xl'
-              className='lg:paragraph fade-in-from-bottom max-w-screen-sm text-center delay-150'
+              className='lg:paragraph fade-in-from-bottom max-w-screen-sm text-center
+                delay-150'
             >
               The KPop Dance Team (KDT), is a team consisting of diverse, unique
               individuals that have common interests in dancing, choreographing, and

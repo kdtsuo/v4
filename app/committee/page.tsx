@@ -51,33 +51,36 @@ export default function Committee() {
   const [isLoading, setIsLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
-  const fetchTeamMembers = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('team_members')
-        .select('*')
-        .eq('is_archived', false)
-        .order('order_index', { ascending: true });
+  const fetchTeamMembers = useCallback(
+    async (options?: { silent?: boolean }) => {
+      if (!options?.silent) setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('is_archived', false)
+          .order('order_index', { ascending: true });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      if (data && data.length > 0) {
-        setTeamMembers(data);
-      } else {
+        if (data && data.length > 0) {
+          setTeamMembers(data);
+        } else {
+          setTeamMembers(FallbackCommittee);
+        }
+      } catch (error) {
+        toast.error('Failed to load team members. Using default data.');
         setTeamMembers(FallbackCommittee);
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      toast.error('Failed to load team members. Using default data.');
-      setTeamMembers(FallbackCommittee);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
+    },
+    [toast]
+  );
 
   useEffect(() => {
-    fetchTeamMembers();
+    void Promise.resolve().then(() => fetchTeamMembers({ silent: true }));
   }, [fetchTeamMembers]);
 
   const sortedMembers = [...teamMembers].sort((a, b) => {

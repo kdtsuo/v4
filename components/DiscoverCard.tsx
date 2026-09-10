@@ -55,13 +55,14 @@ export function DiscoverCard({
         <div className='absolute bottom-0 left-0 right-0 p-5'>
           <div className='flex items-end justify-between'>
             <div className='flex-1'>
-              <Text variant='hd-lg' className='text-white'>{title}</Text>
+              <Text variant='hd-lg' className='text-white'>
+                {title}
+              </Text>
               <Text
                 variant='default'
                 size='sm'
-                className='mt-1 translate-y-2 text-gray-300 opacity-0
-                  transition-all duration-300 group-hover:translate-y-0
-                  group-hover:opacity-100'
+                className='mt-1 translate-y-2 text-gray-300 opacity-0 transition-all
+                  duration-300 group-hover:translate-y-0 group-hover:opacity-100'
               >
                 {description}
               </Text>
@@ -71,7 +72,14 @@ export function DiscoverCard({
                 transition-all duration-300 group-hover:translate-x-0
                 group-hover:opacity-100'
             >
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>Explore</Text>
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
+                Explore
+              </Text>
               <ArrowRight size={14} className='text-white' />
             </div>
           </div>

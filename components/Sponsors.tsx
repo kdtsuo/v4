@@ -131,8 +131,16 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
               size={160}
               className='max-h-36 object-contain'
             />
-            <Badge className='absolute top-4 left-4 rounded-full bg-amber-500/90 px-3 py-1 backdrop-blur-sm'>
-              <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+            <Badge
+              className='absolute top-4 left-4 rounded-full bg-amber-500/90 px-3 py-1
+                backdrop-blur-sm'
+            >
+              <Text
+                as='span'
+                variant='label'
+                size='xs'
+                className='font-semibold text-white'
+              >
                 {sponsor.text}
               </Text>
             </Badge>
@@ -159,9 +167,14 @@ function SponsorDetailsDialog({ sponsor }: { sponsor: SponsorData }) {
           </CardContent>
         </div>
 
-        <CardFooter className='flex flex-col-reverse  sm:flex-row flex-wrap justify-end gap-2 border-t p-4 shrink-0'>
+        <CardFooter
+          className='flex flex-col-reverse sm:flex-row flex-wrap justify-end gap-2
+            border-t p-4 shrink-0'
+        >
           <DialogClose asChild>
-            <Button variant='outline' className='w-full sm:w-auto'>Close</Button>
+            <Button variant='outline' className='w-full sm:w-auto'>
+              Close
+            </Button>
           </DialogClose>
           <Button asChild variant='secondary' className='w-full sm:w-auto'>
             <a href={sponsor.maplink} target='_blank' rel='noopener noreferrer'>
@@ -193,7 +206,6 @@ function SponsorCard({
   onRefresh: () => void;
 }) {
   const { theme } = useTheme();
-  const time = getTimeSince(sponsor.created_at);
   const dottedBg = sponsorCardDottedBg(theme);
 
   return (
@@ -224,9 +236,13 @@ function SponsorCard({
         <DialogTrigger asChild>
           <button
             type='button'
-            className={`group block h-full w-full text-left fade-in-from-bottom ${getDelayClass(index)}`}
+            className={`group block h-full w-full text-left fade-in-from-bottom
+              ${getDelayClass(index)}`}
           >
-            <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg border-muted border'>
+            <div
+              className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg
+                border-muted border'
+            >
               <div className='absolute inset-0' style={{ background: dottedBg }} />
               <div className='absolute inset-0 flex items-center justify-center p-8'>
                 <SponsorLogo
@@ -243,23 +259,33 @@ function SponsorCard({
 
               <Badge
                 className='absolute top-4 left-4 rounded-full bg-amber-500/80 px-3 py-1
-                  backdrop-blur-sm transition-all duration-300 group-hover:bg-amber-500/90'
+                  backdrop-blur-sm transition-all duration-300
+                  group-hover:bg-amber-500/90'
               >
-                <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                <Text
+                  as='span'
+                  variant='label'
+                  size='xs'
+                  className='font-semibold text-white'
+                >
                   {sponsor.text}
                 </Text>
               </Badge>
 
               <div className='absolute right-0 bottom-0 left-0 p-5'>
-                <div className='translate-y-full transition-transform duration-300 group-hover:translate-y-0'>
+                <div
+                  className='translate-y-full transition-transform duration-300
+                    group-hover:translate-y-0'
+                >
                   <Text variant='hd-md' className='line-clamp-2 text-white'>
                     {sponsor.title}
                   </Text>
                 </div>
 
                 <div
-                  className='mt-2 flex translate-y-2 items-center gap-1.5 text-gray-300 opacity-0
-                    transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100'
+                  className='mt-2 flex translate-y-2 items-center gap-1.5 text-gray-300
+                    opacity-0 transition-all duration-300 group-hover:translate-y-0
+                    group-hover:opacity-100'
                 >
                   <MapPin size={12} strokeWidth={2} className='shrink-0' />
                   <Text as='span' variant='default' size='sm' className='line-clamp-1'>
@@ -268,10 +294,16 @@ function SponsorCard({
                 </div>
 
                 <div
-                  className='mt-3 flex translate-x-2 items-center gap-1 opacity-0 transition-all
-                    duration-300 group-hover:translate-x-0 group-hover:opacity-100'
+                  className='mt-3 flex translate-x-2 items-center gap-1 opacity-0
+                    transition-all duration-300 group-hover:translate-x-0
+                    group-hover:opacity-100'
                 >
-                  <Text as='span' variant='label' size='xs' className='font-semibold text-white'>
+                  <Text
+                    as='span'
+                    variant='label'
+                    size='xs'
+                    className='font-semibold text-white'
+                  >
                     View Details
                   </Text>
                   <ArrowRight size={14} className='text-white' />
@@ -295,8 +327,8 @@ function FeaturedSponsor({ sponsor }: { sponsor: SponsorData }) {
       <Card className='fade-in-from-bottom p-6 md:p-8'>
         <div className='flex flex-col items-center gap-6 md:flex-row md:items-center'>
           <div
-            className='bg-muted/30 flex size-44 shrink-0 items-center justify-center rounded-2xl
-              p-4 md:size-56'
+            className='bg-muted/30 flex size-44 shrink-0 items-center justify-center
+              rounded-2xl p-4 md:size-56'
           >
             <SponsorLogo
               src={sponsor.image}
@@ -327,7 +359,10 @@ function FeaturedSponsor({ sponsor }: { sponsor: SponsorData }) {
               {sponsor.text}
             </Badge>
 
-            <div className='mt-5 flex flex-col justify-center gap-3 sm:flex-row md:justify-start'>
+            <div
+              className='mt-5 flex flex-col justify-center gap-3 sm:flex-row
+                md:justify-start'
+            >
               <Button asChild>
                 <a href={sponsor.websitelink} target='_blank' rel='noopener noreferrer'>
                   Visit Website
@@ -394,7 +429,8 @@ function SponsorTierSection({
 
       {sponsors.length === 0 ? (
         <div
-          className='text-muted-foreground rounded-xl border border-dashed p-8 text-center'
+          className='text-muted-foreground rounded-xl border border-dashed p-8
+            text-center'
         >
           {emptyMessage}
         </div>
@@ -423,30 +459,35 @@ export function Sponsors() {
   const [sponsors, setSponsors] = useState<SponsorData[]>([]);
   const [error, setError] = useState(false);
 
-  const fetchSponsors = useCallback(async () => {
-    setIsLoading(true);
-    setError(false);
+  const fetchSponsors = useCallback(
+    async (options?: { silent?: boolean }) => {
+      if (!options?.silent) {
+        setIsLoading(true);
+        setError(false);
+      }
 
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('sponsors')
-        .select('*')
-        .order('title', { ascending: true });
+      try {
+        const { data, error: fetchError } = await supabase
+          .from('sponsors')
+          .select('*')
+          .order('title', { ascending: true });
 
-      if (fetchError) throw fetchError;
+        if (fetchError) throw fetchError;
 
-      setSponsors(data && data.length > 0 ? data : FallbackSponsors);
-    } catch {
-      toast.error('Failed to load sponsors. Using default data.');
-      setSponsors(FallbackSponsors);
-      setError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [toast]);
+        setSponsors(data && data.length > 0 ? data : FallbackSponsors);
+      } catch {
+        toast.error('Failed to load sponsors. Using default data.');
+        setSponsors(FallbackSponsors);
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [toast]
+  );
 
   useEffect(() => {
-    fetchSponsors();
+    void Promise.resolve().then(() => fetchSponsors({ silent: true }));
   }, [fetchSponsors]);
 
   const topSponsor = sponsors.length ? [...sponsors].sort(sponsorTenureSort)[0] : null;

@@ -21,8 +21,8 @@ export function Discover() {
         </div>
 
         <div
-          className='grid auto-rows-60 grid-cols-1 gap-4 sm:grid-cols-2
-            sm:auto-rows-65 lg:grid-cols-3'
+          className='grid auto-rows-60 grid-cols-1 gap-4 sm:grid-cols-2 sm:auto-rows-65
+            lg:grid-cols-3'
         >
           {DiscoverLinks.map((card, index) => (
             <DiscoverCard

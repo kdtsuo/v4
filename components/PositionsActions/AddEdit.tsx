@@ -169,7 +169,8 @@ export function AddEdit({ onPositionSaved, position, trigger }: AddEditProps) {
                       />
                     </FormControl>
                     <FormDescription>
-                      Provide a brief description of the position and its responsibilities.
+                      Provide a brief description of the position and its
+                      responsibilities.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
