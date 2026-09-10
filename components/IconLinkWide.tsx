@@ -65,16 +65,13 @@ export function IconLinkWide({
 
           <div className='absolute top-0 right-0 m-1 mt-2 mr-2 flex gap-1'>
             {isNew && (
-              <Badge variant={'default'} className='rounded-md text-xs'>
-                <h1>NEW</h1>
+              <Badge variant='default' className='text-xs'>
+                NEW
               </Badge>
             )}
             {typeof price === 'number' && !isNaN(price) && (
-              <Badge
-                variant={price === 0 ? 'green' : 'gold'}
-                className='rounded-md text-xs'
-              >
-                <h1>{price === 0 ? 'FREE' : `$${price.toFixed(2)}`}</h1>
+              <Badge variant={price === 0 ? 'green' : 'gold'} className='text-xs'>
+                {price === 0 ? 'FREE' : `$${price.toFixed(2)}`}
               </Badge>
             )}
           </div>
