@@ -3,6 +3,7 @@ export { getDelayClass } from './animations';
 export {
   buildScheduledAtUtc,
   formatScheduledAtDisplay,
+  formatScheduledForBadge,
   formatVancouverDate,
   getCurrentVancouverScheduleValues,
   isBeforeVancouverToday,

@@ -24,6 +24,7 @@ export type IconLinkWideProps = {
   onDelete?: () => void;
   deleteMode?: boolean;
   price?: number;
+  scheduledAt?: string | null;
   style?: React.CSSProperties;
 };
 

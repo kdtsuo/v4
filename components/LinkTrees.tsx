@@ -114,19 +114,29 @@ export function LinkTrees() {
           <Loader2 className='h-12 w-12 animate-spin rounded-full text-gray-700' />
         </div>
       ) : (
-        links.filter(isLinkVisible).map((link, idx) => (
-          <IconLinkWide
-            key={link.id || link.label}
-            iconType={link.iconType}
-            label={link.label}
-            link={link.link}
-            date={link.date}
-            price={link.price}
-            className={`bg-secondary border-ring drop-shadow-box hover:bg-muted
-              fade-in-from-bottom fill-mode-both border-2 text-center
-              ${getDelayClass(idx)}`}
-          />
-        ))
+        (user ? links : links.filter(isLinkVisible)).map((link, idx) => {
+          const isPendingSchedule =
+            Boolean(
+              user &&
+                link.scheduled_at &&
+                !isScheduledLinkVisible(link.scheduled_at)
+            );
+
+          return (
+            <IconLinkWide
+              key={link.id || link.label}
+              iconType={link.iconType}
+              label={link.label}
+              link={link.link}
+              date={link.date}
+              price={link.price}
+              scheduledAt={isPendingSchedule ? link.scheduled_at : undefined}
+              className={`bg-secondary border-ring drop-shadow-box hover:bg-muted
+                fade-in-from-bottom fill-mode-both border-2 text-center
+                ${getDelayClass(idx)}`}
+            />
+          );
+        })
       )}
     </div>
   );

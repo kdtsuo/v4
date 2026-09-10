@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib';
 import type { IconLinkWideProps } from '@/types';
-import { iconMap } from '@/utils';
+import { formatScheduledForBadge, iconMap } from '@/utils';
 import { ChevronRight } from 'lucide-react';
 import { Badge, Button } from '@/components/ui';
 import Image from 'next/image';
@@ -17,6 +17,7 @@ export function IconLinkWide({
   className,
   date,
   price,
+  scheduledAt,
   style,
 }: IconLinkWideProps) {
   const isNew = useMemo(() => {
@@ -30,7 +31,13 @@ export function IconLinkWide({
   const imagePath = iconDetails?.imagePath;
 
   return (
-    <div className='relative flex items-center justify-center' style={style}>
+    <div
+      className={cn(
+        'relative flex items-center justify-center',
+        scheduledAt && 'opacity-50'
+      )}
+      style={style}
+    >
       <Button
         asChild
         variant='secondary'
@@ -61,6 +68,14 @@ export function IconLinkWide({
                   group-hover:opacity-100'
               />
             </div>
+          </div>
+
+          <div className='absolute top-0 left-0 m-1 mt-1 ml-2 flex gap-1'>
+            {scheduledAt && (
+              <Badge className='text-xs py-0'>
+                {formatScheduledForBadge(scheduledAt)}
+              </Badge>
+            )}
           </div>
 
           <div className='absolute top-0 right-0 m-1 mt-2 mr-2 flex gap-1'>

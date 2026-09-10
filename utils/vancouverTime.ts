@@ -92,6 +92,14 @@ export function formatScheduledAtDisplay(iso: string) {
   return `${format(scheduledAt, 'PPP')} at ${hour}:${minute} ${period} (Vancouver)`;
 }
 
+export function formatScheduledForBadge(iso: string) {
+  const scheduledAt = TZDate.tz(VANCOUVER_TZ, iso);
+  const { hour, period } = toHour12(scheduledAt.getHours());
+  const minute = String(scheduledAt.getMinutes()).padStart(2, '0');
+
+  return `Scheduled for ${format(scheduledAt, 'PPP')}, ${hour}:${minute} ${period}`;
+}
+
 export function isBeforeVancouverToday(date: Date) {
   const today = TZDate.tz(VANCOUVER_TZ);
   const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
