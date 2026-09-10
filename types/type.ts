@@ -12,6 +12,7 @@ export type Link = {
   date: string;
   price?: number;
   order?: number; // For reordering links
+  scheduled_at?: string | null;
 };
 
 export type IconLinkWideProps = {

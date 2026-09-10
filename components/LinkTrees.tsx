@@ -8,8 +8,13 @@ import { Loader2, Edit, Trash2, ArrowUpDown, Plus } from 'lucide-react';
 import { IconLinkWide } from '@/components/';
 import { fallbackLinks } from '@/lib/data';
 import { Button } from '@/components/ui';
-import { getDelayClass } from '@/utils/animations';
+import { getDelayClass, isScheduledLinkVisible } from '@/utils';
 import * as HomeActions from '@/components/HomeActions';
+
+function isLinkVisible(link: Link) {
+  if (!link.scheduled_at) return true;
+  return isScheduledLinkVisible(link.scheduled_at);
+}
 
 export function LinkTrees() {
   const [links, setLinks] = useState<Link[]>([]);
@@ -109,7 +114,7 @@ export function LinkTrees() {
           <Loader2 className='h-12 w-12 animate-spin rounded-full text-gray-700' />
         </div>
       ) : (
-        links.map((link, idx) => (
+        links.filter(isLinkVisible).map((link, idx) => (
           <IconLinkWide
             key={link.id || link.label}
             iconType={link.iconType}

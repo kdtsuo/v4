@@ -2,15 +2,23 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, DollarSign } from 'lucide-react';
+import { CalendarIcon, Loader2, DollarSign, Dot } from 'lucide-react';
 import { z } from 'zod';
 import { useToast } from '@/hooks';
 import Image from 'next/image';
 import { supabase } from '@/lib';
-import { iconMap } from '@/utils';
+import {
+  buildScheduledAtUtc,
+  formatVancouverDate,
+  getCurrentVancouverScheduleValues,
+  iconMap,
+  isBeforeVancouverToday,
+  parseScheduledAt,
+} from '@/utils';
 import type { Link } from '@/types';
 import {
   Button,
+  Calendar,
   Dialog,
   DialogContent,
   DialogFooter,
@@ -26,6 +34,9 @@ import {
   FormMessage,
   Input,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   RadioGroup,
   RadioGroupItem,
   ScrollArea,
@@ -35,18 +46,112 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Switch,
 } from '@/components/ui';
 
-const formSchema = z.object({
-  label: z.string().min(1, 'Label is required'),
-  link: z.string().url('Please enter a valid URL'),
-  iconType: z.string().min(1, 'Icon type is required'),
-  price: z
-    .number()
-    .min(0, 'Enter a number or leave blank')
-    .optional()
-    .or(z.literal(undefined)),
+const scheduledHourSchema = z
+  .string()
+  .min(1, 'Hour is required')
+  .regex(/^\d+$/, 'Enter numbers only')
+  .refine((value) => {
+    const hour = Number(value);
+    return hour >= 1 && hour <= 12;
+  }, 'Hour must be between 1 and 12');
+
+const scheduledMinuteSchema = z
+  .string()
+  .min(1, 'Minutes are required')
+  .regex(/^\d+$/, 'Enter numbers only')
+  .refine((value) => {
+    const minute = Number(value);
+    return minute >= 0 && minute <= 60;
+  }, 'Minutes must be between 00 and 60');
+
+const scheduledPeriodSchema = z.enum(['AM', 'PM'], {
+  message: 'Select AM or PM',
 });
+
+const formSchema = z
+  .object({
+    label: z.string().min(1, 'Label is required'),
+    link: z.string().url('Please enter a valid URL'),
+    iconType: z.string().min(1, 'Icon type is required'),
+    price: z
+      .number()
+      .min(0, 'Enter a number or leave blank')
+      .optional()
+      .or(z.literal(undefined)),
+    is_scheduled: z.boolean(),
+    scheduled_date: z.date().optional(),
+    scheduled_hour: z.string().optional(),
+    scheduled_minute: z.string().optional(),
+    scheduled_period: z.enum(['AM', 'PM']).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.is_scheduled) return;
+
+    if (!data.scheduled_date) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Date is required',
+        path: ['scheduled_date'],
+      });
+    }
+
+    const hourResult = scheduledHourSchema.safeParse(data.scheduled_hour);
+    if (!hourResult.success) {
+      hourResult.error.issues.forEach((issue) => {
+        ctx.addIssue({ ...issue, path: ['scheduled_hour'] });
+      });
+    }
+
+    const minuteResult = scheduledMinuteSchema.safeParse(data.scheduled_minute);
+    if (!minuteResult.success) {
+      minuteResult.error.issues.forEach((issue) => {
+        ctx.addIssue({ ...issue, path: ['scheduled_minute'] });
+      });
+    }
+
+    const periodResult = scheduledPeriodSchema.safeParse(data.scheduled_period);
+    if (!periodResult.success) {
+      periodResult.error.issues.forEach((issue) => {
+        ctx.addIssue({ ...issue, path: ['scheduled_period'] });
+      });
+    }
+  });
+
+function digitsOnly(value: string, maxLength: number) {
+  return value.replace(/\D/g, '').slice(0, maxLength);
+}
+
+function clampNumericString(value: string, min: number, max: number) {
+  if (!value) return '';
+  const num = Math.min(max, Math.max(min, Number(value)));
+  return String(num);
+}
+
+function getDefaultScheduleValues() {
+  return {
+    is_scheduled: false,
+    scheduled_date: undefined,
+    scheduled_hour: '12',
+    scheduled_minute: '00',
+    scheduled_period: 'AM' as const,
+  };
+}
+
+function getScheduleValuesFromLink(link?: Link) {
+  const parsed = parseScheduledAt(link?.scheduled_at);
+  if (!parsed) return getDefaultScheduleValues();
+
+  return {
+    is_scheduled: true,
+    scheduled_date: parsed.date,
+    scheduled_hour: parsed.hour,
+    scheduled_minute: parsed.minute,
+    scheduled_period: parsed.period,
+  };
+}
 
 type AddEditProps = {
   onLinkSaved: () => void;
@@ -74,8 +179,25 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
       link: '',
       iconType: 'link',
       price: undefined,
+      ...getDefaultScheduleValues(),
     },
   });
+
+  const isScheduled = form.watch('is_scheduled');
+  const scheduleFieldErrors = [
+    { field: 'scheduled_date', message: form.formState.errors.scheduled_date?.message },
+    { field: 'scheduled_hour', message: form.formState.errors.scheduled_hour?.message },
+    {
+      field: 'scheduled_minute',
+      message: form.formState.errors.scheduled_minute?.message,
+    },
+    {
+      field: 'scheduled_period',
+      message: form.formState.errors.scheduled_period?.message,
+    },
+  ].filter((entry): entry is { field: string; message: string } =>
+    Boolean(entry.message)
+  );
 
   useEffect(() => {
     if (selectedLink) {
@@ -84,6 +206,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
         link: selectedLink.link || '',
         iconType: selectedLink.iconType || 'link',
         price: selectedLink.price ?? undefined,
+        ...getScheduleValuesFromLink(selectedLink),
       });
     } else {
       form.reset({
@@ -91,6 +214,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
         link: '',
         iconType: 'link',
         price: undefined,
+        ...getDefaultScheduleValues(),
       });
     }
   }, [selectedLink, form]);
@@ -107,10 +231,28 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
         return;
       }
 
+      const scheduled_at =
+        values.is_scheduled && values.scheduled_date
+          ? buildScheduledAtUtc(
+              values.scheduled_date,
+              Number(values.scheduled_hour),
+              Number(values.scheduled_minute),
+              values.scheduled_period!
+            )
+          : null;
+
+      const linkPayload = {
+        label: values.label,
+        link: values.link,
+        iconType: values.iconType,
+        price: values.price,
+        scheduled_at,
+      };
+
       if (mode === 'add') {
         const currentDate = new Date().toISOString().split('T')[0];
         const newLink = {
-          ...values,
+          ...linkPayload,
           date: currentDate,
           user_id: user.id,
         };
@@ -120,7 +262,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
       } else if (mode === 'edit' && selectedLink?.id) {
         const { error } = await supabase
           .from('links')
-          .update(values)
+          .update(linkPayload)
           .eq('id', selectedLink.id);
         if (error) throw error;
         toast.success('Link updated successfully!');
@@ -303,6 +445,182 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
                     </FormItem>
                   )}
                 />
+                <div className='space-y-4 rounded-lg border p-3 shadow-sm'>
+                  <FormField
+                    control={form.control}
+                    name='is_scheduled'
+                    render={({ field }) => (
+                      <FormItem
+                        className='flex flex-row items-center justify-between space-y-0'
+                      >
+                        <div className='space-y-0.5'>
+                          <FormLabel>Schedule this link</FormLabel>
+                          <FormDescription>
+                            Choose when this link becomes visible. All times are
+                            Vancouver (PT).
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              if (checked) {
+                                const now = getCurrentVancouverScheduleValues();
+                                form.setValue('scheduled_date', now.date);
+                                form.setValue('scheduled_hour', now.hour);
+                                form.setValue('scheduled_minute', now.minute);
+                                form.setValue('scheduled_period', now.period);
+                              }
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  {isScheduled && (
+                    <div className='space-y-4'>
+                      <FormField
+                        control={form.control}
+                        name='scheduled_date'
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant='outline'
+                                    className='w-full pl-3 text-left font-normal'
+                                  >
+                                    {field.value ? (
+                                      formatVancouverDate(field.value, 'PPP')
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                    <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent align='start'>
+                                <Calendar
+                                  mode='single'
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) => isBeforeVancouverToday(date)}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </FormItem>
+                        )}
+                      />
+                      <div className='grid grid-cols-3 gap-4'>
+                        <FormField
+                          control={form.control}
+                          name='scheduled_hour'
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Hour</FormLabel>
+                              <FormControl>
+                                <Input
+                                  className='text-center'
+                                  type='text'
+                                  inputMode='numeric'
+                                  placeholder='12'
+                                  value={field.value ?? ''}
+                                  onChange={(e) => {
+                                    field.onChange(digitsOnly(e.target.value, 2));
+                                  }}
+                                  onBlur={(e) => {
+                                    field.onBlur();
+                                    const clamped = clampNumericString(
+                                      e.target.value,
+                                      1,
+                                      12
+                                    );
+                                    if (clamped !== e.target.value) {
+                                      field.onChange(clamped);
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name='scheduled_minute'
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Minute</FormLabel>
+                              <FormControl>
+                                <Input
+                                  className='text-center'
+                                  type='text'
+                                  inputMode='numeric'
+                                  placeholder='00'
+                                  value={field.value ?? ''}
+                                  onChange={(e) => {
+                                    field.onChange(digitsOnly(e.target.value, 2));
+                                  }}
+                                  onBlur={(e) => {
+                                    field.onBlur();
+                                    const clamped = clampNumericString(
+                                      e.target.value,
+                                      0,
+                                      60
+                                    );
+                                    if (clamped !== e.target.value) {
+                                      field.onChange(
+                                        clamped === ''
+                                          ? clamped
+                                          : clamped.padStart(2, '0')
+                                      );
+                                    } else if (clamped) {
+                                      field.onChange(clamped.padStart(2, '0'));
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name='scheduled_period'
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>AM/PM</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='AM/PM' />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value='AM'>AM</SelectItem>
+                                  <SelectItem value='PM'>PM</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {isScheduled && scheduleFieldErrors.length > 0 && (
+                    <div className='space-y-1'>
+                      {scheduleFieldErrors.map(({ field, message }) => (
+                        <p
+                          key={field}
+                          className='text-destructive-foreground text-sm'
+                        >
+                          {message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </form>
             </Form>
           )}
