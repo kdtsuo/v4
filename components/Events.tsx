@@ -412,6 +412,27 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
   );
 }
 
+function GoogleCalendarEmbed() {
+  return (
+    <div className='mt-8 border-t pt-8'>
+      <Text
+        variant='caption'
+        size='xs'
+        className='mb-4 text-center font-semibold uppercase tracking-[0.2em]'
+      >
+        Calendar
+      </Text>
+      <div className='relative min-h-150 w-full'>
+        <iframe
+          src='https://calendar.google.com/calendar/embed?src=kpopdanceteam.suo%40gmail.com&ctz=America%2FVancouver'
+          title='K-Pop Dance Team Events Calendar'
+          className='absolute inset-0 h-full w-full rounded-xl border-0'
+        />
+      </div>
+    </div>
+  );
+}
+
 export function Events() {
   const [events, setEvents] = useState<Pick<ClubData, 'upcomingEvents' | 'pastEvents'>>({
     upcomingEvents: [],
@@ -477,6 +498,8 @@ export function Events() {
             <ReviewsSection />
           </>
         )}
+
+        <GoogleCalendarEmbed />
       </Card>
     </section>
   );
