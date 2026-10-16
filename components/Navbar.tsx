@@ -91,7 +91,6 @@ function LoginDialog() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant='outline'>
-          Login
           <LogIn />
         </Button>
       </DialogTrigger>
