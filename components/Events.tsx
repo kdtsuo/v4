@@ -412,7 +412,12 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
   );
 }
 
+const CALENDAR_SRC =
+  'https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0';
+
 function GoogleCalendarEmbed() {
+  const frameClass = `absolute inset-0 h-full w-full rounded-3xl border-0
+    dark:hue-rotate-180 dark:invert`;
   return (
     <div className='mt-8 border-t pt-8'>
       <Text
@@ -422,12 +427,19 @@ function GoogleCalendarEmbed() {
       >
         Calendar
       </Text>
-      <div className='relative min-h-150 w-full'>
+      {/* Mobile: agenda list (month grid is too cramped on narrow screens) */}
+      <div className='relative h-125 w-full sm:hidden'>
         <iframe
-          src='https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
+          src={`${CALENDAR_SRC}&mode=AGENDA`}
           title='K-Pop Dance Team Events Calendar'
-          className='absolute inset-0 h-full w-full rounded-3xl border-0
-            dark:hue-rotate-180 dark:invert'
+          className={frameClass}
+        />
+      </div>
+      <div className='relative hidden min-h-150 w-full sm:block'>
+        <iframe
+          src={`${CALENDAR_SRC}&mode=MONTH`}
+          title='K-Pop Dance Team Events Calendar'
+          className={frameClass}
         />
       </div>
     </div>
