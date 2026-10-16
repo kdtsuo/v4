@@ -43,6 +43,9 @@ function chromePath() {
   if (process.platform === 'darwin') {
     return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
   }
+  if (process.platform === 'win32') {
+    return 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+  }
   return '/usr/bin/google-chrome';
 }
 
@@ -126,6 +129,62 @@ async function uploadAvatar(supabase, memberId, avatarUrl) {
   return `${data.publicUrl}?v=${Date.now()}`;
 }
 
+const CONCURRENCY = Number(process.env.SCRAPE_CONCURRENCY) || 3;
+
+// Every profile gets its own row, printed up front. On a TTY each row is
+// redrawn in place (spinner + elapsed seconds while running, result when done);
+// otherwise rows just print their result as they finish so CI logs stay plain.
+function createProgress(targets) {
+  const frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+  const tty = process.stdout.isTTY;
+  const labels = targets.map(
+    (m, i) => `${String(i + 1).padStart(2)}. ${m.full_name} (@${m.username})`
+  );
+  const pad = Math.max(...labels.map((l) => l.length));
+  const rows = targets.map(() => ({ start: null, result: null }));
+  let frame = 0;
+  let timer = null;
+
+  const text = (i) => {
+    const row = rows[i];
+    let status = '·';
+    if (row.result) status = row.result;
+    else if (row.start) {
+      status = `${frames[frame % frames.length]} ${Math.floor((Date.now() - row.start) / 1000)}s`;
+    }
+    return `  ${labels[i].padEnd(pad)}  ${status}`;
+  };
+  const draw = (first) => {
+    const width = (process.stdout.columns || 100) - 1;
+    const up = first ? '' : `\x1b[${rows.length}A`;
+    const body = rows.map((_, i) => `\x1b[2K${text(i).slice(0, width)}`).join('\n');
+    process.stdout.write(`${up}${body}\n`);
+  };
+
+  return {
+    start() {
+      if (!tty) return;
+      draw(true);
+      timer = setInterval(() => {
+        frame++;
+        draw(false);
+      }, 100);
+    },
+    begin(i) {
+      rows[i].start = Date.now();
+    },
+    finish(i, result) {
+      const secs = Math.round((Date.now() - (rows[i].start ?? Date.now())) / 1000);
+      rows[i].result = `${result} (${secs}s)`;
+      if (!tty) console.log(`  ${labels[i]}  ${rows[i].result}`);
+    },
+    stop() {
+      if (timer) clearInterval(timer);
+      if (tty) draw(false);
+    },
+  };
+}
+
 async function main() {
   const supabase = createServiceClient({ requireWrite: !dryRun });
 
@@ -141,7 +200,10 @@ async function main() {
     .filter((m) => m.username)
     .filter((m) => !only || only.includes(m.username));
 
-  console.log(`Scraping ${targets.length} profile(s)${dryRun ? ' (dry run)' : ''}\n`);
+  console.log(
+    `Scraping ${targets.length} profile(s), ${Math.min(CONCURRENCY, targets.length)} at a time${dryRun ? ' (dry run)' : ''}
+`
+  );
 
   const browser = await puppeteer.launch({
     executablePath: chromePath(),
@@ -151,63 +213,84 @@ async function main() {
 
   const counts = { ok: 0, 'no-avatar': 0, 'not-found': 0, failed: 0 };
 
+  let blocked = null;
+  let next = 0;
+  const progress = createProgress(targets);
+  progress.start();
+
   try {
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    );
+    const worker = async () => {
+      const page = await browser.newPage();
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      );
 
-    for (const member of targets) {
-      const label = `${member.full_name} (@${member.username})`;
-      try {
-        const result = await scrapeProfile(page, member.username);
+      while (!blocked && next < targets.length) {
+        const index = next++;
+        const member = targets[index];
+        progress.begin(index);
+        try {
+          const result = await scrapeProfile(page, member.username);
 
-        // Being served the login wall is about this machine's IP, not this
-        // member, so every remaining profile would fail the same way. Stop
-        // rather than march through the list writing placeholder data.
-        if (result.status === 'blocked') {
-          throw new BlockedError(result.title);
-        }
-
-        if (result.status !== 'ok') {
-          counts[result.status]++;
-          console.log(`- ${label}: ${result.status}`);
-        } else if (dryRun) {
-          counts.ok++;
-          console.log(
-            `- ${label}: ok — bio=${result.bio ? 'yes' : 'none'}, avatar found`
-          );
-        } else {
-          const publicUrl = await uploadAvatar(supabase, member.id, result.avatarUrl);
-          const { data: updated, error: updateError } = await supabase
-            .from('team_members')
-            .update({
-              instagram_avatar_url: publicUrl,
-              instagram_bio: result.bio,
-              instagram_synced_at: new Date().toISOString(),
-            })
-            .eq('id', member.id)
-            .select('id');
-          if (updateError) throw updateError;
-          // An update blocked by RLS reports no error, it just matches no rows —
-          // which is exactly what happens with the anon key instead of the
-          // service role key. Without this check the sync looks like it worked.
-          if (!updated || updated.length === 0) {
-            throw new Error('update affected 0 rows (is SUPABASE_SERVICE_ROLE_KEY set?)');
+          // Being served the login wall is about this machine's IP, not this
+          // member, so every remaining profile would fail the same way. Stop
+          // rather than march through the list writing placeholder data.
+          if (result.status === 'blocked') {
+            throw new BlockedError(result.title);
           }
 
-          counts.ok++;
-          console.log(`- ${label}: synced — bio=${result.bio ? 'yes' : 'none'}`);
-        }
-      } catch (err) {
-        if (err instanceof BlockedError) throw err;
-        counts.failed++;
-        console.log(`- ${label}: FAILED — ${err.message}`);
-      }
+          if (result.status !== 'ok') {
+            counts[result.status]++;
+            progress.finish(index, `${result.status}`);
+          } else if (dryRun) {
+            counts.ok++;
+            progress.finish(
+              index,
+              `ok — bio=${result.bio ? 'yes' : 'none'}, avatar found`
+            );
+          } else {
+            const publicUrl = await uploadAvatar(supabase, member.id, result.avatarUrl);
+            const { data: updated, error: updateError } = await supabase
+              .from('team_members')
+              .update({
+                instagram_avatar_url: publicUrl,
+                instagram_bio: result.bio,
+                instagram_synced_at: new Date().toISOString(),
+              })
+              .eq('id', member.id)
+              .select('id');
+            if (updateError) throw updateError;
+            // An update blocked by RLS reports no error, it just matches no rows —
+            // which is exactly what happens with the anon key instead of the
+            // service role key. Without this check the sync looks like it worked.
+            if (!updated || updated.length === 0) {
+              throw new Error(
+                'update affected 0 rows (is SUPABASE_SERVICE_ROLE_KEY set?)'
+              );
+            }
 
-      await new Promise((resolve) => setTimeout(resolve, BETWEEN_PROFILES_MS));
-    }
+            counts.ok++;
+            progress.finish(index, `synced — bio=${result.bio ? 'yes' : 'none'}`);
+          }
+        } catch (err) {
+          if (err instanceof BlockedError) {
+            blocked = err;
+            progress.finish(index, 'BLOCKED');
+            return;
+          }
+          counts.failed++;
+          progress.finish(index, `FAILED — ${err.message}`);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, BETWEEN_PROFILES_MS));
+      }
+    };
+
+    const n = Math.min(CONCURRENCY, targets.length);
+    await Promise.all(Array.from({ length: n }, worker));
+    if (blocked) throw blocked;
   } finally {
+    progress.stop();
     await browser.close();
   }
 
