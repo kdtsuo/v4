@@ -424,9 +424,10 @@ function GoogleCalendarEmbed() {
       </Text>
       <div className='relative min-h-150 w-full'>
         <iframe
-          src='https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&mode=WEEK&showTitle=0&showNav=0&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
+          src='https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
           title='K-Pop Dance Team Events Calendar'
-          className='absolute inset-0 h-full w-full rounded-xl border-0 dark:hue-rotate-180 dark:invert'
+          className='absolute inset-0 h-full w-full rounded-xl border-0
+            dark:hue-rotate-180 dark:invert'
         />
       </div>
     </div>
