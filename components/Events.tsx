@@ -493,6 +493,7 @@ export function Events() {
             <ExpandableGridSection
               title='Upcoming Events'
               items={upcomingEvents}
+              emptyMessage='No upcoming events'
               renderCard={(event, i) => <EventCard event={event} index={i} />}
             />
             <ReviewsSection />
