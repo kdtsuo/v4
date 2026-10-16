@@ -304,30 +304,26 @@ export default function Positions() {
                     </CardContent>
                   )}
 
-                  <CardFooter className='flex gap-2 border-t pt-4'>
-                    <Button
-                      variant='secondary'
-                      className='flex-1'
-                      onClick={() => handleCopyLink(position.form_url, position.label)}
-                      disabled={!position.is_accepting_responses && !user}
-                    >
-                      <Clipboard className='h-4 w-4' /> Copy Link
-                    </Button>
-                    <Button
-                      variant='default'
-                      className='flex-1'
-                      disabled={!position.is_accepting_responses && !user}
-                      asChild
-                    >
-                      <Link
-                        href={position.form_url}
-                        target='_blank'
-                        rel='noopener noreferrer'
+                  {(position.is_accepting_responses || user) && (
+                    <CardFooter className='flex gap-2 border-t pt-4'>
+                      <Button
+                        variant='secondary'
+                        className='flex-1'
+                        onClick={() => handleCopyLink(position.form_url, position.label)}
                       >
-                        <ExternalLink className='h-4 w-4' /> Go to Form
-                      </Link>
-                    </Button>
-                  </CardFooter>
+                        <Clipboard className='h-4 w-4' /> Copy Link
+                      </Button>
+                      <Button variant='default' className='flex-1' asChild>
+                        <Link
+                          href={position.form_url}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          <ExternalLink className='h-4 w-4' /> Go to Form
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  )}
                 </Card>
               ))}
             </div>
