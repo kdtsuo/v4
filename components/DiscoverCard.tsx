@@ -29,7 +29,7 @@ export function DiscoverCard({
       className={`group block h-full ${!isOpen ? 'pointer-events-none opacity-50' : ''}
         ${className}`}
     >
-      <div className='relative h-full overflow-hidden rounded-2xl shadow-lg'>
+      <div className='relative h-full overflow-hidden rounded-4xl shadow-lg'>
         <Image
           src={image}
           alt={title}

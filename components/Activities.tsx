@@ -24,7 +24,7 @@ function Activity({ images, title, text, index }: ActivityProps) {
   return (
     <div
       className={`fade-in-from-bottom ${getDelayClass(index)} flex flex-col
-        overflow-hidden border rounded-2xl shadow-lg lg:h-[420px] lg:flex-row
+        overflow-hidden border rounded-4xl shadow-lg lg:h-[420px] lg:flex-row
         ${isReverse ? 'lg:flex-row-reverse' : ''}`}
     >
       <div className='relative w-full lg:w-3/5'>

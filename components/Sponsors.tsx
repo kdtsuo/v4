@@ -221,7 +221,7 @@ function SponsorCard({
               sponsor={sponsor}
               onSponsorSaved={onRefresh}
               trigger={
-                <Button className='h-8 w-8 p-0' variant='secondary' size='sm'>
+                <Button className='h-8 w-8 p-0' variant='outline' size='sm'>
                   <Edit size={16} />
                 </Button>
               }
@@ -240,7 +240,7 @@ function SponsorCard({
               ${getDelayClass(index)}`}
           >
             <div
-              className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg
+              className='relative h-full min-h-70 overflow-hidden rounded-4xl shadow-xl shadow-black/25
                 border-muted border'
             >
               <div className='absolute inset-0' style={{ background: dottedBg }} />
@@ -324,11 +324,11 @@ function FeaturedSponsor({ sponsor }: { sponsor: SponsorData }) {
 
   return (
     <section className='container mx-auto mb-4 px-4'>
-      <Card className='fade-in-from-bottom p-6 md:p-8'>
+      <Card className='fade-in-from-bottom p-6 shadow-xl shadow-black/20 md:p-8'>
         <div className='flex flex-col items-center gap-6 md:flex-row md:items-center'>
           <div
             className='bg-muted/30 flex size-44 shrink-0 items-center justify-center
-              rounded-2xl p-4 md:size-56'
+              rounded-4xl p-4 md:size-56'
           >
             <SponsorLogo
               src={sponsor.image}
@@ -429,7 +429,7 @@ function SponsorTierSection({
 
       {sponsors.length === 0 ? (
         <div
-          className='text-muted-foreground rounded-xl border border-dashed p-8
+          className='text-muted-foreground rounded-3xl border border-dashed p-8
             text-center'
         >
           {emptyMessage}

@@ -1,14 +1,18 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Inter } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import './App.css';
 import { AuthProvider, ToastProvider } from '@/contexts';
 import { Navbar } from '@/components/';
 import { Footer } from '@/components/';
 import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -47,17 +51,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' className={cn("font-sans", inter.variable)}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <ThemeProvider attribute='class' defaultTheme='dark' enableSystem={false}>
             <ToastProvider>
+              <TooltipProvider>
               {children}
               <Navbar />
               <Footer />
               <Toaster />
               <Analytics />
               <SpeedInsights />
+              </TooltipProvider>
             </ToastProvider>
           </ThemeProvider>
         </AuthProvider>

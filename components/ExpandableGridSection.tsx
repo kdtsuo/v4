@@ -39,7 +39,7 @@ export function ExpandableGridSection<T extends { id: string }>({
             {title}
           </Text>
         )}
-        <div className='border rounded-xl border-dashed'>
+        <div className='border rounded-3xl border-dashed'>
           <Text variant='default' className='py-8 text-center text-muted-foreground'>
             {emptyMessage}
           </Text>

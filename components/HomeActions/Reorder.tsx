@@ -55,7 +55,7 @@ function SortableItem({ link }: { link: Link }) {
     <div
       ref={setNodeRef}
       style={style}
-      className='bg-secondary border-ring flex items-center gap-2 rounded-md border-2 p-3'
+      className='bg-secondary border-ring flex items-center gap-2 rounded-2xl border-2 p-3'
     >
       <div
         {...attributes}

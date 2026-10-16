@@ -209,7 +209,7 @@ export default function Positions() {
           {isLoading ? (
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
               {[...Array(6)].map((_, i) => (
-                <Card key={i} className='fade-in-from-bottom rounded-2xl'>
+                <Card key={i} className='fade-in-from-bottom'>
                   <div className='p-6 space-y-3'>
                     <Skeleton className='h-5 w-24 rounded-full' />
                     <Skeleton className='h-7 w-3/4' />

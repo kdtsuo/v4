@@ -136,7 +136,7 @@ function MerchCard({ item, index }: { item: MerchItem; index: number }) {
           className={`group block h-full w-full text-left fade-in-from-bottom
             ${getDelayClass(index)}`}
         >
-          <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg'>
+          <div className='relative h-full min-h-70 overflow-hidden rounded-4xl shadow-lg'>
             <Image
               src={item.image}
               alt={item.title}

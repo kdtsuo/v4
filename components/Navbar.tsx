@@ -34,7 +34,7 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   return (
     <div
       role='button'
-      className={`flex rounded-xl p-2 outline ${className} bg-white`}
+      className={`flex rounded-full p-2 outline ${className} bg-white`}
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       <SunIcon
@@ -299,7 +299,7 @@ export function Navbar() {
               {/* <LanguageSelector /> */}
               <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>
-                  <div role='button' className='rounded-xl p-2 outline'>
+                  <div role='button' className='rounded-3xl p-2 outline'>
                     <Menu />
                   </div>
                 </SheetTrigger>

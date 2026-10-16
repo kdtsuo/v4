@@ -389,7 +389,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
                                 <label
                                   htmlFor={`manage-${iconKey}`}
                                   className={`hover:bg-accent flex cursor-pointer flex-col
-                                  items-center justify-center rounded-md border-2 p-4 ${
+                                  items-center justify-center rounded-2xl border-2 p-4 ${
                                     field.value === iconKey
                                       ? 'border-primary bg-accent'
                                       : 'border-muted'
@@ -445,7 +445,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
                     </FormItem>
                   )}
                 />
-                <div className='space-y-4 rounded-lg border p-3 shadow-sm'>
+                <div className='space-y-4 rounded-2xl border p-3 shadow-sm'>
                   <FormField
                     control={form.control}
                     name='is_scheduled'

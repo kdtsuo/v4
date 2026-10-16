@@ -306,7 +306,7 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
           className={`group block h-full w-full text-left fade-in-from-bottom
             ${getDelayClass(index)}`}
         >
-          <div className='relative h-full min-h-70 overflow-hidden rounded-2xl shadow-lg'>
+          <div className='relative h-full min-h-70 overflow-hidden rounded-4xl shadow-lg'>
             <Image
               src={event.image}
               alt={event.title}
@@ -322,7 +322,7 @@ function EventCard({ event, index }: { event: ClubEvent; index: number }) {
 
             {!event.isPast && (
               <div
-                className='absolute left-4 top-4 rounded-xl bg-white/20 px-3 py-2
+                className='absolute left-4 top-4 rounded-3xl bg-white/20 px-3 py-2
                   text-center backdrop-blur-sm transition-all duration-300
                   group-hover:bg-white/30'
               >
@@ -426,7 +426,7 @@ function GoogleCalendarEmbed() {
         <iframe
           src='https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&mode=MONTH&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0'
           title='K-Pop Dance Team Events Calendar'
-          className='absolute inset-0 h-full w-full rounded-xl border-0
+          className='absolute inset-0 h-full w-full rounded-3xl border-0
             dark:hue-rotate-180 dark:invert'
         />
       </div>

@@ -200,7 +200,7 @@ export function AddEdit({ onPositionSaved, position, trigger }: AddEditProps) {
                 name='is_accepting_responses'
                 render={({ field }) => (
                   <FormItem
-                    className='flex flex-row items-center justify-between rounded-lg
+                    className='flex flex-row items-center justify-between rounded-2xl
                       border p-3 shadow-sm'
                   >
                     <div className='space-y-0.5'>
