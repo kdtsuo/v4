@@ -456,8 +456,8 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
                         <div className='space-y-0.5'>
                           <FormLabel>Schedule this link</FormLabel>
                           <FormDescription>
-                            Choose when this link becomes visible. All times are
-                            Vancouver (PT).
+                            Choose when this link becomes visible. All times are Vancouver
+                            (PT).
                           </FormDescription>
                         </div>
                         <FormControl>
@@ -611,10 +611,7 @@ export function AddEdit({ onLinkSaved, links = [], trigger }: AddEditProps) {
                   {isScheduled && scheduleFieldErrors.length > 0 && (
                     <div className='space-y-1'>
                       {scheduleFieldErrors.map(({ field, message }) => (
-                        <p
-                          key={field}
-                          className='text-destructive-foreground text-sm'
-                        >
+                        <p key={field} className='text-destructive-foreground text-sm'>
                           {message}
                         </p>
                       ))}

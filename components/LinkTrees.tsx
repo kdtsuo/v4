@@ -115,12 +115,9 @@ export function LinkTrees() {
         </div>
       ) : (
         (user ? links : links.filter(isLinkVisible)).map((link, idx) => {
-          const isPendingSchedule =
-            Boolean(
-              user &&
-                link.scheduled_at &&
-                !isScheduledLinkVisible(link.scheduled_at)
-            );
+          const isPendingSchedule = Boolean(
+            user && link.scheduled_at && !isScheduledLinkVisible(link.scheduled_at)
+          );
 
           return (
             <IconLinkWide
