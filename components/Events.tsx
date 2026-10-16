@@ -426,7 +426,7 @@ function GoogleCalendarEmbed() {
         <iframe
           src='https://calendar.google.com/calendar/embed?src=8be364c2f63c31740d526345c3555631e971100004d65809f7da8219dbb37a12%40group.calendar.google.com&ctz=America%2FVancouver&mode=WEEK'
           title='K-Pop Dance Team Events Calendar'
-          className='absolute inset-0 h-full w-full rounded-xl border-0'
+          className='absolute inset-0 h-full w-full rounded-xl border-0 dark:hue-rotate-180 dark:invert'
         />
       </div>
     </div>
