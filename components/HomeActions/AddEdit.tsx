@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CalendarIcon, Loader2, DollarSign, Dot } from 'lucide-react';
+import { CalendarIcon, Loader2, DollarSign } from 'lucide-react';
 import { z } from 'zod';
 import { useToast } from '@/hooks';
 import Image from 'next/image';

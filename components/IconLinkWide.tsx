@@ -42,8 +42,8 @@ export function IconLinkWide({
         asChild
         variant='secondary'
         className={cn(
-          `t200e group relative flex h-20 w-full items-center rounded-4xl px-4 py-3 text-lg
-          font-medium`,
+          `t200e group relative flex h-20 w-full items-center rounded-4xl px-4 py-3
+          text-lg font-medium`,
           className
         )}
       >

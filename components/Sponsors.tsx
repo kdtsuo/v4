@@ -240,8 +240,8 @@ function SponsorCard({
               ${getDelayClass(index)}`}
           >
             <div
-              className='relative h-full min-h-70 overflow-hidden rounded-4xl shadow-xl shadow-black/25
-                border-muted border'
+              className='relative h-full min-h-70 overflow-hidden rounded-4xl shadow-xl
+                shadow-black/25 border-muted border'
             >
               <div className='absolute inset-0' style={{ background: dottedBg }} />
               <div className='absolute inset-0 flex items-center justify-center p-8'>
