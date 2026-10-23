@@ -7,6 +7,7 @@
     "clear:instagram": "node --env-file=.env scripts/clear-instagram-cache.mjs",
     "dev": "next dev",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint",
     "start": "next start",
     "sync:instagram": "node --env-file=.env scripts/scrape-instagram.mjs"
