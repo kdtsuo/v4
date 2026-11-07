@@ -69,6 +69,8 @@ pnpm lint
 
 Run them locally first. Lint may show existing warnings. Only errors fail CI.
 
+Code conventions (imports, shadcn usage, forms, Supabase, PR titles) are in [`AGENTS.md`](./AGENTS.md).
+
 ## Project layout
 
 ```
@@ -95,7 +97,7 @@ types/, utils/       Shared types and helpers
 
 ## Database
 
-The site reads four tables: `links`, `positions`, `sponsors`, and `team_members`. Schema changes go in a new file under `supabase/migrations/`, named with a timestamp prefix.
+The site reads four tables: `links`, `positions`, `sponsors`, and `team_members`. Create schema changes with `supabase migration new <name>`, which writes a timestamped file under `supabase/migrations/`. Don't create or name migration files by hand.
 
 Some sections show bundled fallback data when their table is empty. For example, the sponsors section uses `lib/data/FallbackSponsors.ts`.
 
