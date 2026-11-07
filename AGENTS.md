@@ -101,7 +101,7 @@ Prettier handles quotes (single, including JSX), line width (90), import order, 
 ## Database (Supabase)
 
 - The browser uses the **anon key**, so Row Level Security is the only thing protecting the data. Every new table enables RLS and adds its policies in the same migration (public read, authenticated write, as the existing tables do).
-- Schema changes go in a new file in `supabase/migrations/` with a timestamp prefix (`20260910000000_link_scheduled_at.sql`). Never edit a migration that has already been applied.
+- Create every migration with the Supabase CLI: `supabase migration new <name>` (e.g. `link_scheduled_at`). It writes the timestamped file in `supabase/migrations/`. Never create the file or write its timestamp by hand. Never edit a migration that has already been applied.
 - The service-role key is only for `scripts/` (read from `.env`). Never give it a `NEXT_PUBLIC_` name or import it into app code.
 - When a column changes, update its type in `types/type.ts` in the same PR.
 
