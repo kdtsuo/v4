@@ -69,6 +69,8 @@ pnpm lint
 
 Run them locally first. Lint may show existing warnings. Only errors fail CI.
 
+Code conventions (imports, shadcn usage, forms, Supabase, PR titles) are in [`AGENTS.md`](./AGENTS.md).
+
 ## Project layout
 
 ```
